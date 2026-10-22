@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShowTimeFOX | Creative Hub & Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-color: #0b0914;
+        --card-bg: rgba(22, 18, 38, 0.7);
+        --card-border: rgba(168, 85, 247, 0.18);
+        --card-hover-border: rgba(192, 132, 252, 0.5);
+
+        --text-primary: #f3e8ff;
+        --text-secondary: #a855f7;
+        --text-muted: #94a3b8;
+
+        --purple-glow: #9333ea;
+        --violet-accent: #c084fc;
+        --pink-accent: #e879f9;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        padding: 3rem 1.5rem;
+      }
+
+      /* Fioletowy Ambient w tle */
+      .ambient-glow-1 {
+        position: fixed;
+        top: -10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(147, 51, 234, 0.25) 0%, rgba(11, 9, 20, 0) 70%);
+        z-index: -1;
+        pointer-events: none;
+        filter: blur(60px);
+      }
+
+      .ambient-glow-2 {
+        position: fixed;
+        bottom: -10%;
+        right: -5%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(232, 121, 249, 0.15) 0%, rgba(11, 9, 20, 0) 70%);
+        z-index: -1;
+        pointer-events: none;
+        filter: blur(80px);
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      /* Header / Hero Section */
+      header {
+        text-align: center;
+        padding: 3rem 1rem 4rem 1rem;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .avatar-badge {
+        display: inline-block;
+        padding: 0.35rem 1rem;
+        border-radius: 999px;
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        color: var(--violet-accent);
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;
+        backdrop-filter: blur(8px);
+      }
+
+      header h1 {
+        font-size: 3.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ffffff 0%, var(--violet-accent) 50%, var(--pink-accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+
+      header p {
+        color: var(--text-muted);
+        font-size: 1.15rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .code-tag {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--violet-accent);
+        background: rgba(147, 51, 234, 0.15);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.95em;
+      }
+
+      /* Sekcje i Grid */
+      section {
+        margin-bottom: 4rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(168, 85, 247, 0.3) 0%, rgba(168, 85, 247, 0) 100%);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.75rem;
+      }
+
+      /* Kafelki / Card Style */
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 1.75rem;
+        backdrop-filter: blur(12px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--violet-accent), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--card-hover-border);
+        box-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.3);
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card-header {
+        margin-bottom: 1rem;
+      }
+
+      .card h3 {
+        color: #ffffff;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .badge-list {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: rgba(168, 85, 247, 0.12);
+        color: var(--violet-accent);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      /* Przyciski */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, var(--purple-glow) 0%, #7e22ce 100%);
+        color: #ffffff;
+        padding: 0.65rem 1.25rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 15px rgba(147, 51, 234, 0.25);
+      }
+
+      .btn:hover {
+        filter: brightness(1.15);
+        box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+        transform: scale(1.02);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+        color: var(--text-primary);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(168, 85, 247, 0.15);
+        border-color: var(--violet-accent);
+        box-shadow: none;
+      }
+
+      /* Stopka */
+      footer {
+        text-align: center;
+        padding-top: 2.5rem;
+        border-top: 1px solid rgba(168, 85, 247, 0.15);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      footer strong {
+        color: var(--violet-accent);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Ambient Fioletowe Światło w Tle -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+      <!-- Main Header -->
+      <header>
+        <div class="avatar-badge">⚡ ShowTimeFOX Creative Studio</div>
+        <h1>Bartłomiej Mastalerz</h1>
+        <p>Full-stack developer building custom web applications, browser extensions, and game dev utilities.</p>
+      </header>
+
+      <!-- Tools & Interactive Playground Section -->
+      <section>
+        <h2 class="section-title">🛠️ Creative Hub & Tools</h2>
+        <div class="grid">
+          <!-- QuickTag Card -->
+          <div class="card">
+            <div>
+              <div class="card-header">
+                <h3>QuickTag LazyMod</h3>
+              </div>
+              <p>Cross-browser extension for AI image tagging with local ComfyUI & WD14 Tagger integration.</p>
+              <div class="badge-list">
+                <span class="tag">Browser Extension</span>
+                <span class="tag">ComfyUI</span>
+                <span class="tag">v1.1.0</span>
+              </div>
+            </div>
+            <a href="https://github.com/ShowTimeFOX/QuickTag-LazyMod" target="_blank" class="btn">Zobacz na GitHubie</a>
+          </div>
+
+          <!-- SVG Generator Card -->
+          <div class="card">
+            <div>
+              <div class="card-header">
+                <h3>SVG Background Generator</h3>
+              </div>
+              <p>Lightweight client-side utility for procedurally generating clean SVG background patterns.</p>
+              <div class="badge-list">
+                <span class="tag">JavaScript</span>
+                <span class="tag">SVG</span>
+                <span class="tag">Client-Side</span>
+              </div>
+            </div>
+            <a href="tools/svg-generator/" class="btn btn-secondary">Uruchom narzędzie</a>
+          </div>
+
+          <!-- Tileset Builder Card -->
+          <div class="card">
+            <div>
+              <div class="card-header">
+                <h3>Game Tileset Builder</h3>
+              </div>
+              <p>Interactive tool for combining, tweaking, and exporting game tileset sheets for 2D engines.</p>
+              <div class="badge-list">
+                <span class="tag">GameDev</span>
+                <span class="tag">Canvas API</span>
+                <span class="tag">Tool</span>
+              </div>
+            </div>
+            <a href="tools/tileset-maker/" class="btn btn-secondary">Uruchom narzędzie</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>
+        &copy; 2026
+        <strong>Bartłomiej Mastalerz</strong>
+        (ShowTimeFOX). Built with HTML/CSS & MIT License.
+      </p>
+    </footer>
+  </body>
+</html>
