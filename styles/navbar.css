@@ -1,0 +1,182 @@
+/* NAVBAR CONTAINER & LAYOUT */
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(11, 9, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  box-sizing: border-box;
+  margin-bottom: 1.5rem;
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* Grupa po prawej stronie: linki i maskotka trzymają się razem w linii */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: nowrap;
+}
+
+/* LOGO / BRAND */
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  font-family: "Space Mono", monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nav-logo:hover {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.nav-logo .spark {
+  color: var(--pink);
+}
+
+/* GLOBAL LINKS */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+/* MASKOTKA ASYSTENT - SHOWTIME (Postać bez kółka) */
+.fox-assistant-inline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.fox-avatar {
+  width: 75px; /* Dajemy więcej miejsca na całą sylwetkę */
+  height: 65px; /* Wysokość dopasowana do paska */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible; /* Żeby uszy/ogon mogły wystawać poza obszar */
+  display: flex;
+  align-items: flex-end; /* Przyklejamy postać do dolnej krawędzi navbara */
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fox-avatar:hover {
+  transform: scale(1.1) translateY(-2px); /* Delikatne podskoczenie po najechaniu */
+}
+
+.fox-avatar model-viewer {
+  --poster-color: transparent;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
+}
+
+/* DYMEK DIALOGOWY SHOWTIME'A (Kotwica do prawej strony awatara) */
+.fox-bubble {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0; /* Dymek wyrównany do prawej krawędzi maskotki */
+  width: max-content;
+  max-width: 260px;
+  padding: 0.65rem 0.9rem;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-hover);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-align: left;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(147, 51, 234, 0.2);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  z-index: 1010;
+}
+
+/* Dzióbek dymka przesunięty w prawą stronę pod maskotkę */
+.fox-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 20px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--border-hover) transparent;
+}
+
+.fox-bubble.hidden {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* RESPONSYWNOŚĆ DLA TELEFONÓW */
+@media (max-width: 650px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-right {
+    gap: 1rem;
+  }
+
+  .nav-links {
+    gap: 0.6rem;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+  }
+
+  .fox-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .fox-bubble {
+    max-width: 200px;
+    font-size: 0.78rem;
+  }
+}
