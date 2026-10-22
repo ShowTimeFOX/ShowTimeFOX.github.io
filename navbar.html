@@ -16,14 +16,17 @@
 
       <!-- ShowTime w prawym rogu paska -->
       <div class="fox-assistant-inline">
-        <div id="fox-bubble" class="fox-bubble hidden">Siema! Jestem ShowTime 🦊 Wymościłem tu miejsce na moje narzędzia!</div>
-        <div class="fox-avatar" onclick="toggleFoxBubble()" title="Kliknij po cytat!">
+        <div id="fox-bubble" class="fox-bubble hidden">Hey there! I'm ShowTime 🦊 Made some room here for my tools!</div>
+        <div class="fox-avatar" title="Click for a quote!">
           <model-viewer
-            src="assets/models/avatar.glb"
+            src="assets/models/textured.glb"
             alt="ShowTime 3D Avatar"
-            auto-rotate
-            camera-controls
-            disable-zoom
+            autoplay
+            animation-name="*"
+            camera-target="-0.1m auto auto"
+            camera-orbit="3.495deg 75.39deg 2.458m"
+            field-of-view="22.86deg"
+            shadow-intensity="0.5"
             interaction-prompt="none"
             style="width: 100%; height: 100%; background: transparent"
           ></model-viewer>

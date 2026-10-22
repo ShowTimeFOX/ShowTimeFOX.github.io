@@ -9,9 +9,10 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  padding: 0.75rem 1.5rem;
+  padding: 1.75rem 1.5rem;
   box-sizing: border-box;
   margin-bottom: 1.5rem;
+  overflow: visible;
 }
 
 .nav-container {
@@ -21,14 +22,17 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  overflow: visible;
+  position: relative;
 }
 
 /* Grupa po prawej stronie: linki i maskotka trzymają się razem w linii */
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 6rem;
   flex-wrap: nowrap;
+  overflow: visible;
 }
 
 /* LOGO / BRAND */
@@ -83,11 +87,15 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .fox-avatar {
-  width: 75px; /* Dajemy więcej miejsca na całą sylwetkę */
-  height: 65px; /* Wysokość dopasowana do paska */
+  position: absolute;
+  right: -100px;
+  bottom: -123px; /* Wysuwa dolną połowę postaci (nogi) poza dolną krawędź paska */
+  width: 160px; /* Szerokość dopasowana do proporcji */
+  height: 190px;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -95,26 +103,30 @@
   display: flex;
   align-items: flex-end; /* Przyklejamy postać do dolnej krawędzi navbara */
   justify-content: center;
-  cursor: pointer;
+  /* cursor: pointer; */
+  /* pointer-events: none; */
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.fox-avatar:hover {
-  transform: scale(1.1) translateY(-2px); /* Delikatne podskoczenie po najechaniu */
-}
-
 .fox-avatar model-viewer {
+  pointer-events: auto;
   --poster-color: transparent;
   width: 100% !important;
   height: 100% !important;
   background: transparent;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out; /* Czas trwania efektu: 0.8 sekundy */
+}
+
+.fox-avatar model-viewer.ready {
+  opacity: 1;
 }
 
 /* DYMEK DIALOGOWY SHOWTIME'A (Kotwica do prawej strony awatara) */
 .fox-bubble {
   position: absolute;
   top: calc(100% + 12px);
-  right: 0; /* Dymek wyrównany do prawej krawędzi maskotki */
+  right: -30px; /* Dymek wyrównany do prawej krawędzi maskotki */
   width: max-content;
   max-width: 260px;
   padding: 0.65rem 0.9rem;
