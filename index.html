@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/navbar.css" />
@@ -23,32 +24,143 @@
   <body>
     <showtime-navbar></showtime-navbar>
     <main class="container">
-      <header class="banner">
-        <p class="badge">
-          <span class="spark" aria-hidden="true">✦</span>
-          ShowTimeFOX Creative Studio
-        </p>
-        <h1 class="name">Bartłomiej Mastalerz</h1>
-        <p class="subtitle">A creative corner for useful mini tools, playful experiments, and software made with curiosity.</p>
-        <nav class="actions" aria-label="Portfolio links">
-          <a class="action" href="index.html#projects" target="_top">Explore the projects ↓</a>
-          <a class="action secondary" href="https://github.com/ShowTimeFOX" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a>
-        </nav>
+      <header class="hero-fullscreen">
+        <div class="hero-inner">
+          <!-- LEWA STRONA: AWATAR -->
+          <div class="hero-visual">
+            <div class="avatar-frame">
+              <img src="assets/images/showtime-avatar.png" alt="ShowTime Avatar" class="hero-avatar-img" />
+              <div class="avatar-glow"></div>
+            </div>
+          </div>
+
+          <!-- PRAWA STRONA: TEKST I OPIS -->
+          <div class="hero-content">
+            <p class="badge">
+              <span class="spark" aria-hidden="true">✦</span>
+              ShowTimeFOX Creative Studio
+            </p>
+            <h1 class="name">Bartłomiej Mastalerz</h1>
+
+            <div class="hero-tags">
+              <span class="tag">Full-Stack Developer</span>
+              <span class="tag">PHP &amp; Laravel</span>
+              <span class="tag">AI-Augmented Dev</span>
+              <span class="tag">Engineering Graduate</span>
+            </div>
+
+            <p class="subtitle">
+              I'm a passionate web developer with a love for creating dynamic and user-friendly websites. I'm a full-stack developer with experience in both
+              frontend and backend technologies. I'm well organized, detail-oriented, and a team player. I have a strong foundation in web development and I'm
+              always eager to learn new technologies and improve my skills. I mostly work in PHP and Laravel, but also have experience in other technologies and
+              created several projects.
+            </p>
+
+            <nav class="actions" aria-label="Portfolio links">
+              <a class="action" href="#projects">Explore the projects ↓</a>
+              <a class="action secondary" href="https://github.com/ShowTimeFOX" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a>
+            </nav>
+          </div>
+        </div>
       </header>
+
+      <!-- NOWA SEKCJA: ABOUT & TECH STACK -->
+      <section id="about" aria-labelledby="about-title">
+        <div class="intro">
+          <div>
+            <p class="eyebrow">The Developer</p>
+            <h2 id="about-title">About</h2>
+          </div>
+          <p>Full-stack developer and engineering graduate focused on clean architecture, interactive web apps, and creative utilities.</p>
+        </div>
+
+        <!-- KARTA ABOUT NA CAŁĄ SZEROKOŚĆ -->
+        <article class="card card-full">
+          <div class="card-icon" aria-hidden="true">🦊</div>
+          <h3>Background &amp; Focus</h3>
+          <p>
+            Engineering graduate in computer science with hands-on experience building production web applications, custom CMS platforms, browser extensions,
+            and IoT hardware integrations. I enjoy bridging full-stack web software with interactive 3D assets, automation tools, and performance-focused
+            architectures.
+          </p>
+        </article>
+
+        <!-- TECH STACK KAFELKI -->
+        <div class="tech-stack-container">
+          <h3 class="tech-stack-title">Tech Stack</h3>
+
+          <div class="tech-grid">
+            <div class="tech-card">
+              <i class="mdi mdi-language-php tech-icon"></i>
+              <span class="tech-name">PHP / Laravel</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-html5 tech-icon"></i>
+              <span class="tech-name">HTML5 / CSS3</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-javascript tech-icon"></i>
+              <span class="tech-name">JavaScript</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-database tech-icon"></i>
+              <span class="tech-name">MySQL / SQLite</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-cpp tech-icon"></i>
+              <span class="tech-name">C++</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-csharp tech-icon"></i>
+              <span class="tech-name">C# / .NET</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-python tech-icon"></i>
+              <span class="tech-name">Python</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-language-java tech-icon"></i>
+              <span class="tech-name">Java</span>
+            </div>
+
+            <div class="tech-card">
+              <i class="mdi mdi-git tech-icon"></i>
+              <span class="tech-name">Git</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-bootstrap tech-icon"></i>
+              <span class="tech-name">Bootstrap</span>
+            </div>
+            <div class="tech-card">
+              <i class="mdi mdi-unity tech-icon"></i>
+              <span class="tech-name">Unity 3D</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="projects" aria-labelledby="projects-title">
         <div class="intro">
           <div>
-            <p class="eyebrow">Made with curiosity</p>
-            <h2 id="projects-title">Projects &amp; mini tools</h2>
+            <p class="eyebrow">Production & Core Work</p>
+            <h2 id="projects-title">Projects</h2>
           </div>
-          <p>A growing collection of practical experiments, creative utilities, and things built just to see what’s possible.</p>
+          <p>A selection of robust web applications, custom platforms, and software solutions built for performance and real-world use.</p>
         </div>
 
         <div class="grid">
           <article class="card">
-            <div class="card-icon" aria-hidden="true">🏷️</div>
-            <h3>QuickTag LazyMod</h3>
-            <p>A cross-browser extension for AI image tagging with local ComfyUI and WD14 Tagger integration.</p>
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-tag-outline"></i>
+              </div>
+              <h3>QuickTag LazyMod</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/quicktag-preview.png" alt="QuickTag LazyMod preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">A cross-browser extension for AI image tagging with local ComfyUI and WD14 Tagger integration.</p>
             <div class="tags" aria-label="Technologies and category">
               <span class="tag">Browser extension</span>
               <span class="tag">ComfyUI</span>
@@ -61,7 +173,69 @@
           </article>
 
           <article class="card">
-            <div class="card-icon" aria-hidden="true">✳️</div>
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-web"></i>
+              </div>
+              <h3>Nudescroll</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/nudescroll-preview.png" alt="Nudescroll preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">A modern, responsive website for showcasing and managing content.</p>
+            <div class="tags" aria-label="Technologies and category">
+              <span class="tag">Website</span>
+              <span class="tag">Laravel</span>
+              <span class="tag">MySQL</span>
+            </div>
+            <a class="card-link" href="https://nudescroll.com/" target="_blank" rel="noopener noreferrer">
+              Open Website
+              <span aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-web"></i>
+              </div>
+              <h3>Wola Mysłowska Library</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/wola-myslowska-preview.png" alt="Wola Mysłowska Library preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              A production-ready website featuring a custom administration panel (CMS) for managing posts, dynamic photo carousels, and media uploads.
+            </p>
+            <div class="tags" aria-label="Technologies and category">
+              <span class="tag">Website</span>
+              <span class="tag">Laravel</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">CMS</span>
+            </div>
+            <a class="card-link" href="https://biblioteka.wolamyslowska.com.pl/" target="_blank" rel="noopener noreferrer">
+              Open Website
+              <span aria-hidden="true">↗</span>
+            </a>
+          </article>
+        </div>
+        <p class="note"></p>
+      </section>
+
+      <section id="tools" aria-labelledby="projects-title">
+        <div class="intro">
+          <div>
+            <p class="eyebrow">Made with curiosity</p>
+            <h2 id="projects-title">Tools</h2>
+          </div>
+          <p>A growing collection of practical experiments, creative utilities, and things built just to see what’s possible.</p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <div class="card-icon" aria-hidden="test">✳️</div>
             <h3>SVG Background Generator</h3>
             <p>A lightweight, client-side utility for generating clean, procedural SVG background patterns.</p>
             <div class="tags" aria-label="Technologies and category">
