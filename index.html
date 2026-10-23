@@ -76,13 +76,26 @@
 
         <!-- KARTA ABOUT NA CAŁĄ SZEROKOŚĆ -->
         <article class="card card-full">
-          <div class="card-icon" aria-hidden="true">🦊</div>
-          <h3>Background &amp; Focus</h3>
-          <p>
-            Engineering graduate in computer science with hands-on experience building production web applications, custom CMS platforms, browser extensions,
-            and IoT hardware integrations. I enjoy bridging full-stack web software with interactive 3D assets, automation tools, and performance-focused
-            architectures.
+          <div class="card-header">
+            <div class="card-icon" aria-hidden="true">
+              <i class="mdi mdi-palette-swatch-outline"></i>
+            </div>
+            <h3>Craftsmanship &amp; Mindset</h3>
+          </div>
+
+          <p class="card-description">
+            I believe the best software lives at the intersection of technical precision and artistic detail. As a developer with a strong creative mindset, I
+            don't just build functional systems—I focus on the entire experience: smooth UI interactions, clean dark-mode visual aesthetics, responsive
+            performance, and polished micro-details. Whether it's fine-tuning 3D viewport parameters, designing custom web tools, or writing maintainable
+            backend code, I love bringing ideas to life with curiosity, care, and an eye for quality.
           </p>
+
+          <div class="tags" aria-label="Personal strengths">
+            <span class="tag">Detail-oriented</span>
+            <span class="tag">UI/UX Mindset</span>
+            <span class="tag">Creative Problem Solving</span>
+            <span class="tag">3D &amp; Interactive</span>
+          </div>
         </article>
 
         <!-- TECH STACK KAFELKI -->
@@ -152,9 +165,9 @@
           <article class="card">
             <div class="card-header">
               <div class="card-icon" aria-hidden="true">
-                <i class="mdi mdi-tag-outline"></i>
+                <i class="mdi mdi-puzzle-outline"></i>
               </div>
-              <h3>QuickTag LazyMod</h3>
+              <h3>QuickTag</h3>
             </div>
             <div class="card-media">
               <img src="assets/images/projects/quicktag-preview.png" alt="QuickTag LazyMod preview" loading="lazy" />
@@ -189,8 +202,14 @@
               <span class="tag">Laravel</span>
               <span class="tag">MySQL</span>
             </div>
-            <a class="card-link" href="https://nudescroll.com/" target="_blank" rel="noopener noreferrer">
-              Open Website
+            <a
+              class="card-link"
+              href="https://nudescroll.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="return confirm('This site contains NSFW (18+) content. Are you sure you wish to proceed?');"
+            >
+              Open website
               <span aria-hidden="true">↗</span>
             </a>
           </article>
@@ -220,6 +239,82 @@
               <span aria-hidden="true">↗</span>
             </a>
           </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-web"></i>
+              </div>
+              <h3>Simple Quiz System</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/sqs-preview.png" alt="sqs preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              A lightweight web application designed for creating, managing, and taking interactive online quizzes with automated scoring and instant feedback.
+            </p>
+            <div class="tags" aria-label="Technologies and category">
+              <span class="tag">Website</span>
+              <span class="tag">PHP</span>
+              <span class="tag">Bootstrap</span>
+              <span class="tag">MySQL</span>
+            </div>
+            <a class="card-link" href="https://sqs.7m.pl/" target="_blank" rel="noopener noreferrer">
+              Open Website
+              <span aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-web"></i>
+              </div>
+              <h3>IoT Field Monitoring Platform</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/smartlock-preview.png" alt="smartlock preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              An embedded hardware and software system featuring BLE authorization, UUID verification, real-time event logging, and power consumption
+              monitoring.
+            </p>
+            <div class="tags" aria-label="Technologies and category">
+              <span class="tag">IoT</span>
+              <span class="tag">C++</span>
+              <span class="tag">ESP32</span>
+              <span class="tag">SQLite</span>
+              <span class="tag">Bluetooth</span>
+            </div>
+            <span class="card-link disabled">In progress</span>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-file-document-edit-outline"></i>
+              </div>
+              <h3>IoT Field Monitoring Platform</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/projects/evergreen-preview.png" alt="evergreen preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              An engineering project comprising a web application for managing distributed IoT field sensors, real-time telemetry data collection, and
+              environmental monitoring.
+            </p>
+            <div class="tags" aria-label="Technologies and category">
+              <span class="tag">Engineering Thesis</span>
+              <span class="tag">C# / .NET</span>
+              <span class="tag">IoT</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">REST API</span>
+            </div>
+            <span class="card-link disabled">Engineering Thesis</span>
+          </article>
         </div>
         <p class="note"></p>
       </section>
@@ -235,29 +330,53 @@
 
         <div class="grid">
           <article class="card">
-            <div class="card-icon" aria-hidden="test">✳️</div>
-            <h3>SVG Background Generator</h3>
-            <p>A lightweight, client-side utility for generating clean, procedural SVG background patterns.</p>
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-view-grid"></i>
+              </div>
+              <h3>SVG Generator</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/tools/svg-generator-preview.png" alt="SVG generator preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              A lightweight, client-side utility designed to generate clean, procedural SVG background patterns instantly for modern web projects.
+            </p>
             <div class="tags" aria-label="Technologies and category">
               <span class="tag">JavaScript</span>
               <span class="tag">SVG</span>
               <span class="tag">Client-side</span>
-              <span class="tag">In progress</span>
             </div>
-            <span class="card-link">In progress</span>
+            <a class="card-link" href="tools/svg-generator/" target="_blank" rel="noopener noreferrer">
+              Launch tool
+              <span aria-hidden="true">↗</span>
+            </a>
           </article>
 
           <article class="card">
-            <div class="card-icon" aria-hidden="true">🧩</div>
-            <h3>Game Tileset Builder</h3>
-            <p>An interactive tool for assembling, tweaking, and exporting tileset sheets for 2D game engines.</p>
+            <div class="card-header">
+              <div class="card-icon" aria-hidden="true">
+                <i class="mdi mdi-view-grid"></i>
+              </div>
+              <h3>Tileset Builder</h3>
+            </div>
+            <div class="card-media">
+              <img src="assets/images/tools/tileset-builder-preview.png" alt="Tileset builder preview" loading="lazy" />
+              <div class="card-media-overlay"></div>
+            </div>
+            <p class="card-description">
+              An interactive canvas-based utility for assembling, tweaking, and exporting custom tileset sheets directly for 2D game engines.
+            </p>
             <div class="tags" aria-label="Technologies and category">
               <span class="tag">Game dev</span>
               <span class="tag">Canvas API</span>
-              <span class="tag">Tool</span>
-              <span class="tag">In progress</span>
+              <span class="tag">Interactive</span>
             </div>
-            <span class="card-link">In progress</span>
+            <a class="card-link" href="tools/tileset-builder/" target="_blank" rel="noopener noreferrer">
+              Launch tool
+              <span aria-hidden="true">↗</span>
+            </a>
           </article>
         </div>
         <p class="note">This hub is a work in progress—new experiments will find their home here.</p>

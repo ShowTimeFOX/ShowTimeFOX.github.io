@@ -154,6 +154,7 @@ section {
 /* -------------------------------------- */
 .hero-fullscreen {
   width: 100vw;
+  height: calc(100vh - 48px);
   position: relative;
   left: 50%;
   right: 50%;

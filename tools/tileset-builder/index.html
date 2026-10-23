@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="pl" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TileSheet Creator - Generator Tilesetów 2D</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              darkbg: "#12131C",
+              panelbg: "#1E1F2E",
+              panelborder: "#2A2C40",
+              accent: "#6366F1",
+              accenthover: "#4F46E5",
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["monospace"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Strict Pixel-art rendering support */
+      .pixelated {
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        image-rendering: -moz-crisp-edges;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #12131c;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #2a2c40;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f4263;
+      }
+
+      /* Checkerboard background for transparency preview */
+      .bg-checkerboard {
+        background-color: #1a1b26;
+        background-image:
+          linear-gradient(45deg, #242636 25%, transparent 25%),
+          linear-gradient(-45deg, #242636 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #242636 75%),
+          linear-gradient(-45deg, transparent 75%, #242636 75%);
+        background-size: 16px 16px;
+        background-position:
+          0 0,
+          0 8px,
+          8px -8px,
+          -8px 0px;
+      }
+
+      /* Tile selection indicator in palette */
+      .tile-selected {
+        outline: 3px solid #6366f1;
+        outline-offset: -2px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-darkbg text-gray-200 h-screen flex flex-col font-sans overflow-hidden select-none"
+  >
+    <!-- Górny Pasek Nawigacyjny -->
+    <header
+      class="bg-panelbg border-b border-panelborder px-6 py-3 flex items-center justify-between z-10 shrink-0"
+    >
+      <div class="flex items-center space-x-3">
+        <div
+          class="bg-accent/20 text-accent p-2 rounded-lg border border-accent/30"
+        >
+          <i class="ph-bold ph-squares-four text-2xl"></i>
+        </div>
+        <div>
+          <h1
+            class="text-lg font-bold tracking-wide text-white flex items-center gap-2"
+          >
+            TileSheet Creator
+            <span
+              class="text-xs bg-accent/30 text-indigo-300 font-mono px-2 py-0.5 rounded border border-accent/40"
+              >16x16 PixelArt</span
+            >
+          </h1>
+          <p class="text-xs text-gray-400">
+            Lokalne narzędzie do paczek tekstur i tilesetów do gier 2D
+          </p>
+        </div>
+      </div>
+
+      <!-- Akcje Eksportu / Projektu -->
+      <div class="flex items-center space-x-3">
+        <label
+          class="cursor-pointer bg-panelborder hover:bg-gray-700 text-gray-200 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-gray-600"
+        >
+          <i class="ph-bold ph-folder-open text-base"></i>
+          Wczytaj Projekt (.json)
+          <input
+            type="file"
+            id="importProjectInput"
+            accept=".json"
+            class="hidden"
+          />
+        </label>
+        <button
+          id="exportProjectBtn"
+          class="bg-panelborder hover:bg-gray-700 text-gray-200 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-gray-600"
+        >
+          <i class="ph-bold ph-floppy-disk text-base"></i>
+          Zapisz Projekt
+        </button>
+        <div class="h-6 w-px bg-panelborder"></div>
+        <button
+          id="exportPngBtn"
+          class="bg-accent hover:bg-accenthover text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-accent/20 transition flex items-center gap-2"
+        >
+          <i class="ph-bold ph-download-simple text-base"></i>
+          Eksportuj jako PNG
+        </button>
+      </div>
+    </header>
+
+    <!-- Główny Układ Aplikacji -->
+    <div class="flex flex-1 overflow-hidden relative">
+      <!-- Lewy Panel Boczny: Biblioteka i Ustawienia -->
+      <aside
+        class="w-80 bg-panelbg border-r border-panelborder flex flex-col z-10 shrink-0"
+      >
+        <!-- Ustawienia Siatki -->
+        <div class="p-4 border-b border-panelborder space-y-4">
+          <h2
+            class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5"
+          >
+            <i class="ph-bold ph-sliders text-accent"></i> Ustawienia Arkusza
+          </h2>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-gray-400 mb-1"
+                >Rozmiar kafelka (px)</label
+              >
+              <select
+                id="tileSizeSelect"
+                class="w-full bg-darkbg border border-panelborder rounded px-2 py-1.5 text-white focus:outline-none focus:border-accent"
+              >
+                <option value="8">8 x 8 px</option>
+                <option value="16" selected>16 x 16 px (Standard)</option>
+                <option value="32">32 x 32 px</option>
+                <option value="64">64 x 64 px</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">Liczba kolumn</label>
+              <input
+                type="number"
+                id="gridColsInput"
+                min="1"
+                max="128"
+                value="8"
+                class="w-full bg-darkbg border border-panelborder rounded px-2 py-1.5 text-white focus:outline-none focus:border-accent"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">Liczba wierszy</label>
+              <input
+                type="number"
+                id="gridRowsInput"
+                min="1"
+                max="128"
+                value="8"
+                class="w-full bg-darkbg border border-panelborder rounded px-2 py-1.5 text-white focus:outline-none focus:border-accent"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">Wynikowa tarcza</label>
+              <div
+                id="canvasDimensionsLabel"
+                class="bg-darkbg border border-panelborder rounded px-2 py-1.5 text-accent font-mono text-center"
+              >
+                128 x 128 px
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Import i Biblioteka Kafelków -->
+        <div class="flex-1 flex flex-col p-4 overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <h2
+              class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5"
+            >
+              <i class="ph-bold ph-image text-accent"></i> Biblioteka Kafelków
+            </h2>
+            <span
+              id="tileCountBadge"
+              class="text-[10px] bg-darkbg border border-panelborder px-2 py-0.5 rounded text-gray-400"
+              >0 szt.</span
+            >
+          </div>
+
+          <!-- Strefa Przeciągnij i Upuść / Dodaj pliki -->
+          <div
+            id="dropZone"
+            class="border-2 border-dashed border-panelborder hover:border-accent bg-darkbg/50 rounded-xl p-3 text-center transition cursor-pointer mb-3 group"
+          >
+            <input
+              type="file"
+              id="imageFileInput"
+              multiple
+              accept="image/png, image/jpeg, image/webp"
+              class="hidden"
+            />
+            <i
+              class="ph-bold ph-upload-simple text-2xl text-gray-500 group-hover:text-accent transition mb-1 block"
+            ></i>
+            <p class="text-xs text-gray-300 font-medium">
+              Kliknij lub przeciągnij obrazki PNG
+            </p>
+            <p class="text-[10px] text-gray-500">
+              Automatyczne cięcie lub import pojedynczych icon
+            </p>
+          </div>
+
+          <!-- Lista kafelków w palecie -->
+          <div class="flex-1 overflow-y-auto pr-1">
+            <div
+              id="tilePalette"
+              class="grid grid-cols-5 gap-2 p-1 bg-darkbg/40 rounded-xl border border-panelborder/50 min-h-[120px]"
+            >
+              <!-- Kafelki generowane dynamicznie -->
+            </div>
+          </div>
+
+          <button
+            id="clearPaletteBtn"
+            class="mt-3 text-xs text-red-400 hover:text-red-300 flex items-center justify-center gap-1 py-1 hover:bg-red-500/10 rounded transition"
+          >
+            <i class="ph-bold ph-trash"></i> Wyczyść bibliotekę
+          </button>
+        </div>
+      </aside>
+
+      <!-- Główny Obszar Roboczy (Canvas) -->
+      <main class="flex-1 flex flex-col bg-darkbg relative overflow-hidden">
+        <!-- Pasek Narzędzi Workspace -->
+        <div
+          class="h-12 bg-panelbg/60 border-b border-panelborder backdrop-blur px-4 flex items-center justify-between z-10"
+        >
+          <!-- Narzędzia Edycji -->
+          <div class="flex items-center space-x-1">
+            <button
+              id="toolStamp"
+              class="tool-btn active p-2 rounded-lg bg-accent text-white hover:bg-accenthover transition flex items-center gap-1 text-xs font-semibold"
+              title="Stempel / Pędzel"
+            >
+              <i class="ph-bold ph-paint-brush text-base"></i> Pędzel
+            </button>
+            <button
+              id="toolEraser"
+              class="tool-btn p-2 rounded-lg hover:bg-panelborder text-gray-400 hover:text-white transition flex items-center gap-1 text-xs font-semibold"
+              title="Gumka"
+            >
+              <i class="ph-bold ph-eraser text-base"></i> Gumka
+            </button>
+            <button
+              id="clearGridBtn"
+              class="p-2 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition flex items-center gap-1 text-xs font-semibold ml-2"
+              title="Wyczyść całą siatkę"
+            >
+              <i class="ph-bold ph-trash text-base"></i> Wyczyść
+            </button>
+          </div>
+
+          <!-- Widoczność Siatki i Zoom -->
+          <div class="flex items-center space-x-4 text-xs">
+            <label
+              class="flex items-center gap-2 cursor-pointer text-gray-300 hover:text-white"
+            >
+              <input
+                type="checkbox"
+                id="toggleGridCheckbox"
+                checked
+                class="rounded bg-darkbg border-panelborder text-accent focus:ring-0"
+              />
+              <span>Pokaż Siatkę</span>
+            </label>
+
+            <div class="h-4 w-px bg-panelborder"></div>
+
+            <div class="flex items-center space-x-1">
+              <button
+                id="zoomOutBtn"
+                class="p-1.5 hover:bg-panelborder rounded text-gray-300"
+              >
+                <i class="ph-bold ph-minus"></i>
+              </button>
+              <span
+                id="zoomLabel"
+                class="font-mono text-gray-300 w-12 text-center"
+                >400%</span
+              >
+              <button
+                id="zoomInBtn"
+                class="p-1.5 hover:bg-panelborder rounded text-gray-300"
+              >
+                <i class="ph-bold ph-plus"></i>
+              </button>
+              <button
+                id="zoomResetBtn"
+                class="p-1.5 hover:bg-panelborder rounded text-gray-400 hover:text-white text-[10px] ml-1"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kontener widoku ze skaliowanie pixelated bez sztucznych ramek HTML -->
+        <div
+          id="viewport"
+          class="flex-1 overflow-auto bg-checkerboard flex items-center justify-center p-8 relative cursor-crosshair"
+        >
+          <div
+            id="canvasWrapper"
+            class="relative transition-transform origin-center leading-none"
+          >
+            <!-- Canvas Rysowania -->
+            <canvas
+              id="tilesetCanvas"
+              class="pixelated block bg-transparent"
+            ></canvas>
+            <!-- Overlay z siatką i zaznaczeniem bez przesunięcia marginesów/borderów -->
+            <canvas
+              id="gridOverlayCanvas"
+              class="pixelated absolute top-0 left-0 pointer-events-none"
+            ></canvas>
+          </div>
+        </div>
+
+        <!-- Dolny Pasek Statusu -->
+        <footer
+          class="h-8 bg-panelbg border-t border-panelborder px-4 flex items-center justify-between text-xs text-gray-400 z-10"
+        >
+          <div id="statusHoverPos" class="font-mono">
+            Pozycja: X: 0, Y: 0 (Komórka 0, 0)
+          </div>
+          <div id="statusInfo" class="flex items-center gap-3">
+            <span>Wskaż lub kliknij, aby postawić tile</span>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      const state = {
+        tileSize: 16,
+        cols: 8,
+        rows: 8,
+        zoom: 4, // Set default zoom to 400% for clearer editing
+        palette: [],
+        selectedTileIndex: null,
+        activeTool: "stamp",
+        gridData: [],
+        showGrid: true,
+        isMouseDown: false,
+        hoverCell: null,
+      };
+
+      // DOM Elements
+      const tileSizeSelect = document.getElementById("tileSizeSelect");
+      const gridColsInput = document.getElementById("gridColsInput");
+      const gridRowsInput = document.getElementById("gridRowsInput");
+      const canvasDimensionsLabel = document.getElementById(
+        "canvasDimensionsLabel",
+      );
+      const dropZone = document.getElementById("dropZone");
+      const imageFileInput = document.getElementById("imageFileInput");
+      const tilePalette = document.getElementById("tilePalette");
+      const tileCountBadge = document.getElementById("tileCountBadge");
+      const clearPaletteBtn = document.getElementById("clearPaletteBtn");
+
+      const tilesetCanvas = document.getElementById("tilesetCanvas");
+      const gridOverlayCanvas = document.getElementById("gridOverlayCanvas");
+      const canvasWrapper = document.getElementById("canvasWrapper");
+      const viewport = document.getElementById("viewport");
+
+      const ctx = tilesetCanvas.getContext("2d");
+      const gridCtx = gridOverlayCanvas.getContext("2d");
+
+      const toolStamp = document.getElementById("toolStamp");
+      const toolEraser = document.getElementById("toolEraser");
+      const clearGridBtn = document.getElementById("clearGridBtn");
+      const toggleGridCheckbox = document.getElementById("toggleGridCheckbox");
+
+      const zoomInBtn = document.getElementById("zoomInBtn");
+      const zoomOutBtn = document.getElementById("zoomOutBtn");
+      const zoomResetBtn = document.getElementById("zoomResetBtn");
+      const zoomLabel = document.getElementById("zoomLabel");
+
+      const statusHoverPos = document.getElementById("statusHoverPos");
+      const exportPngBtn = document.getElementById("exportPngBtn");
+      const exportProjectBtn = document.getElementById("exportProjectBtn");
+      const importProjectInput = document.getElementById("importProjectInput");
+
+      function initGridData() {
+        state.gridData = Array(state.rows)
+          .fill(null)
+          .map(() => Array(state.cols).fill(null));
+      }
+
+      function updateCanvasDimensions() {
+        const width = state.cols * state.tileSize;
+        const height = state.rows * state.tileSize;
+
+        tilesetCanvas.width = width;
+        tilesetCanvas.height = height;
+
+        gridOverlayCanvas.width = width;
+        gridOverlayCanvas.height = height;
+
+        canvasWrapper.style.width = `${width}px`;
+        canvasWrapper.style.height = `${height}px`;
+
+        canvasDimensionsLabel.textContent = `${width} x ${height} px`;
+
+        // Adjust matrix on dimension change
+        const newGrid = Array(state.rows)
+          .fill(null)
+          .map((_, r) =>
+            Array(state.cols)
+              .fill(null)
+              .map((_, c) =>
+                state.gridData[r] && state.gridData[r][c] !== undefined
+                  ? state.gridData[r][c]
+                  : null,
+              ),
+          );
+        state.gridData = newGrid;
+
+        renderCanvas();
+        renderGridOverlay();
+        applyZoom();
+      }
+
+      function applyZoom() {
+        canvasWrapper.style.transform = `scale(${state.zoom})`;
+        zoomLabel.textContent = `${Math.round(state.zoom * 100)}%`;
+      }
+
+      function renderCanvas() {
+        ctx.clearRect(0, 0, tilesetCanvas.width, tilesetCanvas.height);
+        ctx.imageSmoothingEnabled = false;
+
+        for (let r = 0; r < state.rows; r++) {
+          for (let c = 0; c < state.cols; c++) {
+            const tileIndex = state.gridData[r][c];
+            if (tileIndex !== null && state.palette[tileIndex]) {
+              const img = state.palette[tileIndex].imgElement;
+              if (img && img.complete) {
+                ctx.drawImage(
+                  img,
+                  Math.floor(c * state.tileSize),
+                  Math.floor(r * state.tileSize),
+                  state.tileSize,
+                  state.tileSize,
+                );
+              }
+            }
+          }
+        }
+      }
+
+      function renderGridOverlay() {
+        gridCtx.clearRect(
+          0,
+          0,
+          gridOverlayCanvas.width,
+          gridOverlayCanvas.height,
+        );
+        gridCtx.imageSmoothingEnabled = false;
+
+        const w = gridOverlayCanvas.width;
+        const h = gridOverlayCanvas.height;
+
+        // 1. Draw Grid Lines Pixel-Perfect
+        if (state.showGrid) {
+          gridCtx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+          gridCtx.lineWidth = 1;
+
+          // Vertical lines
+          for (let c = 0; c <= state.cols; c++) {
+            const x = Math.floor(c * state.tileSize);
+            gridCtx.beginPath();
+            gridCtx.moveTo(x, 0);
+            gridCtx.lineTo(x, h);
+            gridCtx.stroke();
+          }
+
+          // Horizontal lines
+          for (let r = 0; r <= state.rows; r++) {
+            const y = Math.floor(r * state.tileSize);
+            gridCtx.beginPath();
+            gridCtx.moveTo(0, y);
+            gridCtx.lineTo(w, y);
+            gridCtx.stroke();
+          }
+        }
+
+        // Outer boundary line
+        gridCtx.strokeStyle = "rgba(99, 102, 241, 0.8)";
+        gridCtx.lineWidth = 1;
+        gridCtx.strokeRect(0, 0, w, h);
+
+        // 2. Draw Hover Cursor Cell Highlight
+        if (state.hoverCell) {
+          const { col, row } = state.hoverCell;
+          const hx = Math.floor(col * state.tileSize);
+          const hy = Math.floor(row * state.tileSize);
+
+          gridCtx.fillStyle =
+            state.activeTool === "eraser"
+              ? "rgba(239, 68, 68, 0.25)"
+              : "rgba(99, 102, 241, 0.25)";
+          gridCtx.fillRect(hx, hy, state.tileSize, state.tileSize);
+
+          gridCtx.strokeStyle =
+            state.activeTool === "eraser" ? "#EF4444" : "#6366F1";
+          gridCtx.lineWidth = 1;
+          gridCtx.strokeRect(
+            hx + 0.5,
+            hy + 0.5,
+            state.tileSize - 1,
+            state.tileSize - 1,
+          );
+        }
+      }
+
+      function addImagesToPalette(files) {
+        Array.from(files).forEach((file) => {
+          if (!file.type.startsWith("image/")) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              if (img.width > state.tileSize || img.height > state.tileSize) {
+                sliceAndAddImage(img);
+              } else {
+                addSingleTileToPalette(e.target.result, img);
+              }
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function sliceAndAddImage(img) {
+        const cols = Math.floor(img.width / state.tileSize);
+        const rows = Math.floor(img.height / state.tileSize);
+
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = state.tileSize;
+        tempCanvas.height = state.tileSize;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx.imageSmoothingEnabled = false;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            tempCtx.clearRect(0, 0, state.tileSize, state.tileSize);
+            tempCtx.drawImage(
+              img,
+              c * state.tileSize,
+              r * state.tileSize,
+              state.tileSize,
+              state.tileSize,
+              0,
+              0,
+              state.tileSize,
+              state.tileSize,
+            );
+
+            const tileDataUrl = tempCanvas.toDataURL("image/png");
+            const newImg = new Image();
+            newImg.src = tileDataUrl;
+            addSingleTileToPalette(tileDataUrl, newImg);
+          }
+        }
+      }
+
+      function addSingleTileToPalette(dataUrl, imgElement) {
+        state.palette.push({ dataUrl, imgElement });
+        renderPalette();
+
+        if (state.selectedTileIndex === null) {
+          selectTile(0);
+        }
+      }
+
+      function renderPalette() {
+        tilePalette.innerHTML = "";
+        tileCountBadge.textContent = `${state.palette.length} szt.`;
+
+        state.palette.forEach((item, idx) => {
+          const btn = document.createElement("button");
+          btn.className = `relative aspect-square bg-checkerboard rounded-lg p-1 border border-panelborder hover:border-accent flex items-center justify-center group overflow-hidden transition ${state.selectedTileIndex === idx ? "tile-selected" : ""}`;
+
+          const img = document.createElement("img");
+          img.src = item.dataUrl;
+          img.className =
+            "w-full h-full object-contain pixelated pointer-events-none";
+
+          btn.appendChild(img);
+
+          const delBtn = document.createElement("div");
+          delBtn.className =
+            "absolute top-0 right-0 bg-red-500 text-white rounded-bl text-[8px] p-0.5 opacity-0 group-hover:opacity-100 transition";
+          delBtn.innerHTML = '<i class="ph-bold ph-x"></i>';
+          delBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeTileFromPalette(idx);
+          };
+          btn.appendChild(delBtn);
+
+          btn.onclick = () => selectTile(idx);
+          tilePalette.appendChild(btn);
+        });
+      }
+
+      function selectTile(index) {
+        state.selectedTileIndex = index;
+        setTool("stamp");
+        renderPalette();
+      }
+
+      function removeTileFromPalette(index) {
+        state.palette.splice(index, 1);
+        if (state.selectedTileIndex === index) {
+          state.selectedTileIndex = state.palette.length > 0 ? 0 : null;
+        } else if (state.selectedTileIndex > index) {
+          state.selectedTileIndex--;
+        }
+
+        for (let r = 0; r < state.rows; r++) {
+          for (let c = 0; c < state.cols; c++) {
+            if (state.gridData[r][c] === index) {
+              state.gridData[r][c] = null;
+            } else if (state.gridData[r][c] > index) {
+              state.gridData[r][c]--;
+            }
+          }
+        }
+
+        renderPalette();
+        renderCanvas();
+      }
+
+      function getCellFromEvent(e) {
+        const rect = tilesetCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / state.zoom;
+        const y = (e.clientY - rect.top) / state.zoom;
+
+        const col = Math.floor(x / state.tileSize);
+        const row = Math.floor(y / state.tileSize);
+
+        if (col >= 0 && col < state.cols && row >= 0 && row < state.rows) {
+          return { col, row, pixelX: Math.floor(x), pixelY: Math.floor(y) };
+        }
+        return null;
+      }
+
+      function handleCellAction(col, row) {
+        if (state.activeTool === "stamp") {
+          if (state.selectedTileIndex !== null) {
+            state.gridData[row][col] = state.selectedTileIndex;
+            renderCanvas();
+          }
+        } else if (state.activeTool === "eraser") {
+          state.gridData[row][col] = null;
+          renderCanvas();
+        }
+      }
+
+      viewport.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return;
+        const cell = getCellFromEvent(e);
+        if (cell) {
+          state.isMouseDown = true;
+          handleCellAction(cell.col, cell.row);
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        state.isMouseDown = false;
+      });
+
+      viewport.addEventListener("mousemove", (e) => {
+        const cell = getCellFromEvent(e);
+        if (cell) {
+          state.hoverCell = { col: cell.col, row: cell.row };
+          statusHoverPos.textContent = `Pozycja: X: ${cell.pixelX}px, Y: ${cell.pixelY}px | Komórka: [${cell.col}, ${cell.row}]`;
+          if (state.isMouseDown) {
+            handleCellAction(cell.col, cell.row);
+          }
+        } else {
+          state.hoverCell = null;
+          statusHoverPos.textContent = `Pozycja: Poza siatką`;
+        }
+        renderGridOverlay();
+      });
+
+      viewport.addEventListener("mouseleave", () => {
+        state.hoverCell = null;
+        renderGridOverlay();
+      });
+
+      function setTool(tool) {
+        state.activeTool = tool;
+        if (tool === "stamp") {
+          toolStamp.classList.add("bg-accent", "text-white");
+          toolStamp.classList.remove("text-gray-400");
+          toolEraser.classList.remove("bg-accent", "text-white");
+          toolEraser.classList.add("text-gray-400");
+        } else {
+          toolEraser.classList.add("bg-accent", "text-white");
+          toolEraser.classList.remove("text-gray-400");
+          toolStamp.classList.remove("bg-accent", "text-white");
+          toolStamp.classList.add("text-gray-400");
+        }
+        renderGridOverlay();
+      }
+
+      toolStamp.onclick = () => setTool("stamp");
+      toolEraser.onclick = () => setTool("eraser");
+
+      clearGridBtn.onclick = () => {
+        initGridData();
+        renderCanvas();
+      };
+
+      toggleGridCheckbox.onchange = (e) => {
+        state.showGrid = e.target.checked;
+        renderGridOverlay();
+      };
+
+      tileSizeSelect.onchange = (e) => {
+        state.tileSize = parseInt(e.target.value);
+        updateCanvasDimensions();
+      };
+
+      gridColsInput.onchange = (e) => {
+        state.cols = Math.max(1, parseInt(e.target.value) || 1);
+        updateCanvasDimensions();
+      };
+
+      gridRowsInput.onchange = (e) => {
+        state.rows = Math.max(1, parseInt(e.target.value) || 1);
+        updateCanvasDimensions();
+      };
+
+      zoomInBtn.onclick = () => {
+        state.zoom = Math.min(12, state.zoom + 1);
+        applyZoom();
+      };
+      zoomOutBtn.onclick = () => {
+        state.zoom = Math.max(1, state.zoom - 1);
+        applyZoom();
+      };
+      zoomResetBtn.onclick = () => {
+        state.zoom = 4;
+        applyZoom();
+      };
+
+      dropZone.onclick = () => imageFileInput.click();
+      imageFileInput.onchange = (e) => addImagesToPalette(e.target.files);
+
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("border-accent");
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("border-accent");
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("border-accent");
+        if (e.dataTransfer.files.length) {
+          addImagesToPalette(e.dataTransfer.files);
+        }
+      });
+
+      clearPaletteBtn.onclick = () => {
+        state.palette = [];
+        state.selectedTileIndex = null;
+        initGridData();
+        renderPalette();
+        renderCanvas();
+      };
+
+      exportPngBtn.onclick = () => {
+        const link = document.createElement("a");
+        link.download = `tileset_${state.cols * state.tileSize}x${state.rows * state.tileSize}.png`;
+        link.href = tilesetCanvas.toDataURL("image/png");
+        link.click();
+      };
+
+      exportProjectBtn.onclick = () => {
+        const projectData = {
+          tileSize: state.tileSize,
+          cols: state.cols,
+          rows: state.rows,
+          gridData: state.gridData,
+          palette: state.palette.map((p) => p.dataUrl),
+        };
+
+        const blob = new Blob([JSON.stringify(projectData, null, 2)], {
+          type: "application/json",
+        });
+        const link = document.createElement("a");
+        link.download = "tileset_project.json";
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      };
+
+      importProjectInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            state.tileSize = data.tileSize || 16;
+            state.cols = data.cols || 8;
+            state.rows = data.rows || 8;
+            state.gridData = data.gridData || [];
+
+            tileSizeSelect.value = state.tileSize;
+            gridColsInput.value = state.cols;
+            gridRowsInput.value = state.rows;
+
+            state.palette = [];
+            let loadedCount = 0;
+
+            if (data.palette && data.palette.length > 0) {
+              data.palette.forEach((dataUrl) => {
+                const img = new Image();
+                img.onload = () => {
+                  loadedCount++;
+                  if (loadedCount === data.palette.length) {
+                    renderPalette();
+                    renderCanvas();
+                  }
+                };
+                img.src = dataUrl;
+                state.palette.push({ dataUrl, imgElement: img });
+              });
+              state.selectedTileIndex = 0;
+            } else {
+              renderPalette();
+              renderCanvas();
+            }
+
+            updateCanvasDimensions();
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      window.onload = () => {
+        initGridData();
+        updateCanvasDimensions();
+      };
+    </script>
+  </body>
+</html>
