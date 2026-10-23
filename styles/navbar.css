@@ -174,12 +174,8 @@
     gap: 1rem;
   }
 
-  .nav-links {
-    gap: 0.6rem;
-  }
-
-  .nav-links a {
-    font-size: 0.8rem;
+  .nav-right {
+    display: none; /* Ukryj linki w menu na małych ekranach */
   }
 
   .fox-avatar {

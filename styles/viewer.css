@@ -1,0 +1,469 @@
+/* ==========================================================
+   PEŁNOEKRANOWY VIEWER — wersja lekka
+   Statyczne gradienty, animacje tylko na transform/opacity,
+   bez blur / blend-mode / glow / animowanych cieni.
+   ========================================================== */
+
+.project-modal-backdrop {
+  --vw-accent: var(--accent, #c084fc);
+  --vw-violet: #9333ea;
+  --vw-pink: #f472b6;
+  --vw-cyan: #67e8f9;
+  --vw-ink: #ece6ff;
+  --vw-muted: #a79cc7;
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  overflow: hidden;
+
+  /* aurora jako statyczny gradient — malowany raz */
+  background:
+    radial-gradient(50rem 32rem at 10% -8%, rgba(147, 51, 234, 0.26), transparent 65%),
+    radial-gradient(44rem 30rem at 95% 5%, rgba(244, 114, 182, 0.14), transparent 65%), #0a0813;
+
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.4s;
+}
+
+.project-modal-backdrop.active {
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.project-modal-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- HEADER ---------- */
+.project-modal-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(17, 14, 31, 0.9);
+  border-bottom: 1px solid rgba(192, 132, 252, 0.14);
+  flex-shrink: 0;
+}
+
+.modal-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Space Mono", monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--vw-accent);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  color: var(--vw-ink);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 1.35rem;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.25s ease;
+}
+
+.modal-close-btn:hover {
+  background: #ef4444;
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid var(--vw-accent);
+  outline-offset: 3px;
+}
+
+/* pasek postępu czytania (tylko transform) */
+.modal-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  pointer-events: none;
+}
+
+.modal-progress span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--vw-violet), var(--vw-pink), var(--vw-cyan));
+}
+
+/* ---------- KARTKA ---------- */
+.project-modal-body {
+  padding: 3rem 3rem 4rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+  min-height: 0;
+  max-width: 920px;
+  width: 100%;
+  margin: 1.75rem auto;
+  box-sizing: border-box;
+  color: var(--vw-ink);
+  line-height: 1.7;
+  font-size: 1rem;
+
+  background: #130f24;
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  border-top-color: rgba(244, 114, 182, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  contain: paint;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(192, 132, 252, 0.35) transparent;
+}
+
+/* delikatne wejście sekcji — raz, na transform/opacity */
+.project-modal-body > .docs-section {
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: vw-rise 0.5s ease-out forwards;
+}
+.project-modal-body > .docs-section:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.project-modal-body > .docs-section:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.project-modal-body > .docs-section:nth-child(3) {
+  animation-delay: 0.19s;
+}
+.project-modal-body > .docs-section:nth-child(n + 4) {
+  animation-delay: 0.26s;
+}
+
+@keyframes vw-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- TYPOGRAFIA TREŚCI ---------- */
+.project-modal-body h3 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, #fff 10%, var(--vw-accent) 60%, var(--vw-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.project-modal-body h3::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin-top: 0.9rem;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--vw-violet), var(--vw-pink));
+}
+
+.project-modal-body h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--vw-ink);
+}
+
+.project-modal-body h4 i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  color: var(--vw-accent);
+  background: rgba(147, 51, 234, 0.16);
+  border: 1px solid rgba(192, 132, 252, 0.28);
+}
+
+.project-modal-body p {
+  margin: 0 0 1rem;
+  color: var(--vw-muted);
+}
+
+.project-modal-body strong {
+  color: var(--vw-ink);
+}
+
+.project-modal-body :not(pre) > code {
+  font-family: "Space Mono", monospace;
+  font-size: 0.82em;
+  padding: 0.15em 0.5em;
+  border-radius: 7px;
+  color: var(--vw-cyan);
+  background: rgba(103, 232, 249, 0.07);
+  border: 1px solid rgba(103, 232, 249, 0.18);
+}
+
+/* lista cech jako karty */
+.project-modal-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.project-modal-body li {
+  position: relative;
+  padding: 0.9rem 1rem 0.9rem 2.6rem;
+  color: var(--vw-muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(192, 132, 252, 0.12);
+  border-radius: 14px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.project-modal-body li::before {
+  content: "✦";
+  position: absolute;
+  left: 1rem;
+  top: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--vw-accent);
+}
+
+.project-modal-body li:hover {
+  transform: translateX(4px);
+  border-color: rgba(192, 132, 252, 0.4);
+}
+
+.project-modal-body li strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+/* screenshoty */
+.docs-screenshots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.docs-screenshots img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  transition: transform 0.25s ease;
+}
+
+.docs-screenshots img:hover {
+  transform: translateY(-4px) scale(1.015);
+}
+
+/* figure + podpis w siatce screenshotów */
+.docs-screenshots figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* ---------- .vnote — podpisy obrazków, przypisy, wskazówki ---------- */
+.vnote {
+  display: block;
+  margin: 0.6rem 0 0;
+  font-family: "Space Mono", monospace;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--vw-muted);
+}
+
+/* podpis pod obrazkiem: mały znaczek ✦ przed tekstem */
+figure > .vnote,
+figcaption.vnote {
+  margin: 0;
+  text-align: center;
+}
+
+.vnote::before {
+  content: "✦ ";
+  color: var(--vw-accent);
+}
+
+/* wariant ramki — dla uwag, wskazówek, ostrzeżeń w treści */
+.vnote--box {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  color: var(--vw-ink);
+  background: rgba(147, 51, 234, 0.1);
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  border-left: 3px solid var(--vw-accent);
+  border-radius: 10px;
+}
+
+.vnote--box::before {
+  content: none;
+}
+
+.vnote--warn {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.22);
+  border-left-color: #fbbf24;
+}
+
+/* blok kodu — okienko terminala */
+.code-block {
+  position: relative;
+  margin: 0;
+  padding: 2.8rem 1.3rem 1.3rem;
+  overflow-x: auto;
+  font-family: "Space Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: #e9defc;
+  background: #0c0919;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  border-radius: 14px;
+}
+
+.code-block::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: 1.1rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff6b8b;
+  box-shadow:
+    18px 0 0 #fbbf24,
+    36px 0 0 #4ade80;
+}
+
+.code-block code {
+  font-family: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* ---------- STANY ŁADOWANIA / BŁĘDU ---------- */
+.modal-loading,
+.modal-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  min-height: 40vh;
+  text-align: center;
+  color: var(--vw-muted);
+  font-family: "Space Mono", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.modal-loading i {
+  font-size: 2rem;
+  color: var(--vw-accent);
+}
+
+.modal-error i {
+  font-size: 2.4rem;
+  color: #fb7185;
+}
+
+/* ---------- PRZYCISK PROJECT DOCS ---------- */
+.btn-docs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 0.55rem 1rem;
+  color: var(--vw-accent);
+  background: rgba(147, 51, 234, 0.12);
+  border: 1px solid rgba(147, 51, 234, 0.35);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-docs:hover {
+  background: rgba(147, 51, 234, 0.28);
+  border-color: var(--vw-accent);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ---------- RESPONSYWNOŚĆ ---------- */
+@media (max-width: 768px) {
+  .project-modal-header {
+    padding: 0.8rem 1rem;
+  }
+
+  .project-modal-body {
+    margin: 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    box-shadow: none;
+    padding: 1.75rem 1.1rem 3rem;
+  }
+
+  .project-modal-body li {
+    padding-left: 2.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-modal-backdrop {
+    transition-duration: 0.01s;
+  }
+  .project-modal-body > .docs-section {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

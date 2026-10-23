@@ -17,11 +17,13 @@
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/modal.css" />
     <link rel="stylesheet" href="styles/navbar.css" />
+    <link rel="stylesheet" href="styles/viewer.css" />
 
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
     <script src="scripts/navbar-component.js" defer></script>
     <script src="scripts/age-warning.js" defer></script>
+    <script src="scripts/viewer.js" defer></script>
   </head>
   <body>
     <showtime-navbar></showtime-navbar>
@@ -31,7 +33,7 @@
           <!-- LEWA STRONA: AWATAR -->
           <div class="hero-visual">
             <div class="avatar-frame">
-              <img src="assets/images/showtime-avatar.png" alt="ShowTime Avatar" class="hero-avatar-img" />
+              <img src="assets/images/showtime-avatar.webp" alt="ShowTime Avatar" class="hero-avatar-img" />
               <div class="avatar-glow"></div>
             </div>
           </div>
@@ -60,7 +62,10 @@
 
             <nav class="actions" aria-label="Portfolio links">
               <a class="action" href="#projects">Explore the projects ↓</a>
-              <a class="action secondary" href="https://github.com/ShowTimeFOX" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a>
+              <a class="action secondary" href="https://github.com/ShowTimeFOX" target="_blank" rel="noopener noreferrer">
+                GitHub profile
+                <i class="mdi mdi-open-in-new"></i>
+              </a>
             </nav>
           </div>
         </div>
@@ -172,7 +177,7 @@
               <h3>QuickTag</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/quicktag-preview.png" alt="QuickTag LazyMod preview" loading="lazy" />
+              <img src="assets/images/projects/quicktag-preview.webp" alt="QuickTag LazyMod preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">A cross-browser extension for AI image tagging with local ComfyUI and WD14 Tagger integration.</p>
@@ -183,8 +188,12 @@
             </div>
             <a class="card-link" href="https://github.com/ShowTimeFOX/QuickTag-LazyMod" target="_blank" rel="noopener noreferrer">
               Explore on GitHub
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
+            <button type="button" class="btn-docs" onclick="openProjectModal('quicktag')">
+              <i class="mdi mdi-file-document-outline"></i>
+              Project Docs
+            </button>
           </article>
 
           <article class="card">
@@ -195,7 +204,7 @@
               <h3>Nudescroll</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/nudescroll-preview.png" alt="Nudescroll preview" loading="lazy" />
+              <img src="assets/images/projects/nudescroll-preview.webp" alt="Nudescroll preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">A modern, responsive website for showcasing and managing content.</p>
@@ -204,17 +213,14 @@
               <span class="tag">Laravel</span>
               <span class="tag">MySQL</span>
             </div>
-            <a
-              class="card-link"
-              href="https://nudescroll.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-age-warning
-              aria-haspopup="dialog"
-            >
+            <a class="card-link" href="https://nudescroll.com" target="_blank" rel="noopener noreferrer" data-age-warning aria-haspopup="dialog">
               Open website
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
+            <button type="button" class="btn-docs" onclick="openProjectModal('nudescroll')">
+              <i class="mdi mdi-file-document-outline"></i>
+              Project Docs
+            </button>
           </article>
 
           <article class="card">
@@ -225,7 +231,7 @@
               <h3>Wola Mysłowska Library</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/wola-myslowska-preview.png" alt="Wola Mysłowska Library preview" loading="lazy" />
+              <img src="assets/images/projects/wola-myslowska-preview.webp" alt="Wola Mysłowska Library preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -239,7 +245,7 @@
             </div>
             <a class="card-link" href="https://biblioteka.wolamyslowska.com.pl/" target="_blank" rel="noopener noreferrer">
               Open Website
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
           </article>
 
@@ -251,7 +257,7 @@
               <h3>Simple Quiz System</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/sqs-preview.png" alt="sqs preview" loading="lazy" />
+              <img src="assets/images/projects/sqs-preview.webp" alt="sqs preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -265,7 +271,7 @@
             </div>
             <a class="card-link" href="https://sqs.7m.pl/" target="_blank" rel="noopener noreferrer">
               Open Website
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
           </article>
 
@@ -277,7 +283,7 @@
               <h3>IoT Field Monitoring Platform</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/smartlock-preview.png" alt="smartlock preview" loading="lazy" />
+              <img src="assets/images/projects/smartlock-preview.webp" alt="smartlock preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -302,7 +308,7 @@
               <h3>IoT Field Monitoring Platform</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/projects/evergreen-preview.png" alt="evergreen preview" loading="lazy" />
+              <img src="assets/images/projects/evergreen-preview.webp" alt="evergreen preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -340,7 +346,7 @@
               <h3>SVG Generator</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/tools/svg-generator-preview.png" alt="SVG generator preview" loading="lazy" />
+              <img src="assets/images/tools/svg-generator-preview.webp" alt="SVG generator preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -353,7 +359,7 @@
             </div>
             <a class="card-link" href="tools/svg-generator/" target="_blank" rel="noopener noreferrer">
               Launch tool
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
           </article>
 
@@ -365,7 +371,7 @@
               <h3>Tileset Builder</h3>
             </div>
             <div class="card-media">
-              <img src="assets/images/tools/tileset-builder-preview.png" alt="Tileset builder preview" loading="lazy" />
+              <img src="assets/images/tools/tileset-builder-preview.webp" alt="Tileset builder preview" loading="lazy" />
               <div class="card-media-overlay"></div>
             </div>
             <p class="card-description">
@@ -378,7 +384,7 @@
             </div>
             <a class="card-link" href="tools/tileset-builder/" target="_blank" rel="noopener noreferrer">
               Launch tool
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
             </a>
           </article>
         </div>
@@ -399,7 +405,7 @@
         <button class="age-warning-cancel" type="button" data-age-warning-cancel>Go back</button>
         <a class="age-warning-continue" href="https://nudescroll.com" target="_blank" rel="noopener noreferrer">
           I’m 18 or older
-          <span aria-hidden="true">↗</span>
+          <span aria-hidden="true"><i class="mdi mdi-open-in-new"></i></span>
         </a>
       </div>
     </dialog>
@@ -407,8 +413,31 @@
     <footer>
       <div class="container footer-inner">
         <span>© 2026 Bartłomiej Mastalerz · ShowTimeFOX</span>
-        <a href="https://github.com/ShowTimeFOX">More on GitHub ↗</a>
+        <a href="https://github.com/ShowTimeFOX">
+          More on GitHub
+          <i class="mdi mdi-open-in-new"></i>
+        </a>
       </div>
     </footer>
+
+    <!-- PEŁNOEKRANOWY VIEWER DOKUMENTACJI -->
+    <div id="project-modal" class="project-modal-backdrop" aria-hidden="true">
+      <div class="project-modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <header class="project-modal-header">
+          <div class="modal-indicator" id="modal-title">
+            <span aria-hidden="true">✦</span>
+            Project Case Study
+          </div>
+          <button type="button" class="modal-close-btn" onclick="closeProjectModal()" aria-label="Close viewer">
+            <i class="mdi mdi-close"></i>
+          </button>
+          <div class="modal-progress" aria-hidden="true"><span id="modal-progress-bar"></span></div>
+        </header>
+
+        <div id="project-modal-body" class="project-modal-body">
+          <!-- Treść z content/projects/*.html wstrzykiwana tutaj -->
+        </div>
+      </div>
+    </div>
   </body>
 </html>

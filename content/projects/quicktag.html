@@ -1,0 +1,86 @@
+<div class="docs-section">
+  <h3>QuickTag LazyMod Overview</h3>
+  <p>
+    QuickTag LazyMod is a Manifest V3 browser extension for Chrome and Firefox designed to streamline image tagging using a floating interface. It supports
+    editable tag packs, site-specific profiles, interface customization, and optional AI image analysis through a local ComfyUI installation.
+  </p>
+</div>
+
+<div class="docs-section">
+  <h4>
+    <i class="mdi mdi-image-multiple-outline"></i>
+    Interface &amp; Screenshots
+  </h4>
+  <div class="docs-screenshots">
+    <figure>
+      <img src="assets/images/projects/quicktag-preview.webp" alt="QuickTag Main Tagger Interface" loading="lazy" />
+      <figcaption class="vnote">Main Interface</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/images/projects/quicktag-1.webp" alt="QuickTag Settings and Palette Editor" loading="lazy" />
+      <figcaption class="vnote">Popup Interface</figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="docs-section">
+  <h4>
+    <i class="mdi mdi-layers-outline"></i>
+    Architecture &amp; Key Features
+  </h4>
+  <ul>
+    <li>
+      <strong>Shadow DOM Isolation:</strong>
+      The content script injects the interface inside a Shadow DOM to minimize style conflicts with host pages.
+    </li>
+    <li>
+      <strong>Per-Origin Settings:</strong>
+      Docking mode, dock edge, panel visibility, and floating positions are saved separately for each page origin.
+    </li>
+    <li>
+      <strong>Global Visibility Toggle:</strong>
+      A toolbar popup toggle immediately hides or shows QuickTag across all open pages without requiring page reloads.
+    </li>
+    <li>
+      <strong>Configurable Storage:</strong>
+      Settings, site profiles, palettes, and the AI blacklist are stored locally using
+      <code>chrome.storage.local</code>
+      .
+    </li>
+  </ul>
+</div>
+
+<div class="docs-section">
+  <h4>
+    <i class="mdi mdi-robot-outline"></i>
+    ComfyUI &amp; AI Integration
+  </h4>
+  <p>
+    Optional image analysis connects to a local ComfyUI server running at
+    <code>http://127.0.0.1:8188</code>
+    with the
+    <code>WD14Tagger|pysssss</code>
+    custom node. The extension uploads the image via
+    <code>/upload/image</code>
+    , submits a prompt workflow, and retrieves tags by monitoring queue and history endpoints.
+  </p>
+</div>
+
+<div class="docs-section">
+  <h4>
+    <i class="mdi mdi-code-braces"></i>
+    Core Logic Snippet
+  </h4>
+  <pre class="code-block"><code>async function analyzeImageWithComfy(imageBlob) {
+  const formData = new FormData();
+  formData.append('image', imageBlob);
+
+  const response = await fetch('http://127.0.0.1:8188/upload/image', {
+    method: 'POST',
+    body: formData
+  });
+  
+  if (!response.ok) throw new Error('Image upload failed');
+  return await response.json();
+}</code></pre>
+</div>
