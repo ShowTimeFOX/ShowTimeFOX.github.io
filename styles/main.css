@@ -515,15 +515,15 @@ footer a {
     flex-direction: column;
   }
 
-  .badge {
-    display: none;
-  }
-
   header {
     margin-bottom: 5rem;
   }
 
   .hero-fullscreen {
+    height: auto;
+    min-height: calc(100vh - 5rem);
+    min-height: calc(100svh - 5rem);
+    overflow: visible;
     padding: 1rem 1.5rem;
   }
 
