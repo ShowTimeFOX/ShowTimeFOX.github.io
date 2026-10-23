@@ -15,11 +15,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/modal.css" />
     <link rel="stylesheet" href="styles/navbar.css" />
 
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
     <script src="scripts/navbar-component.js" defer></script>
+    <script src="scripts/age-warning.js" defer></script>
   </head>
   <body>
     <showtime-navbar></showtime-navbar>
@@ -207,7 +209,8 @@
               href="https://nudescroll.com"
               target="_blank"
               rel="noopener noreferrer"
-              onclick="return confirm('This site contains NSFW (18+) content. Are you sure you wish to proceed?');"
+              data-age-warning
+              aria-haspopup="dialog"
             >
               Open website
               <span aria-hidden="true">↗</span>
@@ -382,6 +385,24 @@
         <p class="note">This hub is a work in progress—new experiments will find their home here.</p>
       </section>
     </main>
+
+    <dialog class="age-warning-dialog" id="age-warning" aria-labelledby="age-warning-title" aria-describedby="age-warning-description">
+      <div class="age-warning-icon" aria-hidden="true">
+        <i class="mdi mdi-shield-alert-outline"></i>
+      </div>
+      <p class="age-warning-eyebrow">Content advisory</p>
+      <h2 id="age-warning-title">18+ content ahead</h2>
+      <p id="age-warning-description">
+        Nudescroll contains adult content intended for adults only. Please confirm that you are at least 18 and wish to continue.
+      </p>
+      <div class="age-warning-actions">
+        <button class="age-warning-cancel" type="button" data-age-warning-cancel>Go back</button>
+        <a class="age-warning-continue" href="https://nudescroll.com" target="_blank" rel="noopener noreferrer">
+          I’m 18 or older
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </dialog>
 
     <footer>
       <div class="container footer-inner">
