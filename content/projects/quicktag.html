@@ -1,8 +1,9 @@
 <div class="docs-section">
   <h3>QuickTag LazyMod Overview</h3>
   <p>
-    QuickTag LazyMod is a Manifest V3 browser extension for Chrome and Firefox designed to streamline image tagging using a floating interface. It supports
-    editable tag packs, site-specific profiles, interface customization, and optional AI image analysis through a local ComfyUI installation.
+    Manifest V3 browser extension for Chrome and Firefox designed to streamline image tagging via a floating, highly customizable interface. QuickTag LazyMod
+    simplifies image tagging workflows by offering editable tag packs, site-specific profiles, and optional AI-powered image analysis integrated with a local
+    ComfyUI instance.
   </p>
 </div>
 
@@ -26,61 +27,112 @@
 <div class="docs-section">
   <h4>
     <i class="mdi mdi-layers-outline"></i>
-    Architecture &amp; Key Features
+    Architecture &amp; Core Engineering
   </h4>
   <ul>
     <li>
       <strong>Shadow DOM Isolation:</strong>
-      The content script injects the interface inside a Shadow DOM to minimize style conflicts with host pages.
+      Injects the entire UI into a Shadow DOM to completely eliminate CSS style leaks and conflicts with host websites.
     </li>
     <li>
-      <strong>Per-Origin Settings:</strong>
-      Docking mode, dock edge, panel visibility, and floating positions are saved separately for each page origin.
+      <strong>Per-Origin State Persistence:</strong>
+      Remembers UI docking positions, side-panel states, and floating window coordinates individually for every site origin.
     </li>
     <li>
       <strong>Global Visibility Toggle:</strong>
-      A toolbar popup toggle immediately hides or shows QuickTag across all open pages without requiring page reloads.
+      Instant toolbar popup switch to show or hide the overlay across all active tabs without reloading pages.
     </li>
     <li>
-      <strong>Configurable Storage:</strong>
-      Settings, site profiles, palettes, and the AI blacklist are stored locally using
+      <strong>Configurable Local Storage:</strong>
+      Uses
       <code>chrome.storage.local</code>
-      .
+      to securely persist profiles, tag palettes, custom themes, and AI blacklists.
     </li>
   </ul>
 </div>
 
 <div class="docs-section">
   <h4>
-    <i class="mdi mdi-robot-outline"></i>
-    ComfyUI &amp; AI Integration
+    <i class="mdi mdi-view-dashboard-outline"></i>
+    Key Features &amp; User Experience
   </h4>
-  <p>
-    Optional image analysis connects to a local ComfyUI server running at
-    <code>http://127.0.0.1:8188</code>
-    with the
-    <code>WD14Tagger|pysssss</code>
-    custom node. The extension uploads the image via
-    <code>/upload/image</code>
-    , submits a prompt workflow, and retrieves tags by monitoring queue and history endpoints.
-  </p>
-</div>
-
-<div class="docs-section">
-  <h4>
-    <i class="mdi mdi-code-braces"></i>
-    Core Logic Snippet
-  </h4>
-  <pre class="code-block"><code>async function analyzeImageWithComfy(imageBlob) {
-  const formData = new FormData();
-  formData.append('image', imageBlob);
-
-  const response = await fetch('http://127.0.0.1:8188/upload/image', {
-    method: 'POST',
-    body: formData
-  });
-  
-  if (!response.ok) throw new Error('Image upload failed');
-  return await response.json();
-}</code></pre>
+  <h4 class="vsubtitle">Tagging Workflow & Palettes</h4>
+  <ul>
+    <li>
+      <strong>Zero-Setup Readiness:</strong>
+      Ships with built-in preset palettes so you can start tagging immediately after installation.
+    </li>
+    <li>
+      <strong>Flexible Palette Management:</strong>
+      Import, export, edit, or delete custom tag packs. Easily share your setups across multiple devices or with friends.
+    </li>
+    <li>
+      <strong>Smart Hierarchy & Flat View:</strong>
+      Organizes tags into main categories and subcategories. Toggle "Flat View" to collapse all subcategories into a single streamlined view instantly.
+    </li>
+    <li>
+      <strong>Batch Tag Toggle:</strong>
+      The "Add tags" master button acts as a quick switch to apply or clear all currently visible tags at once.
+    </li>
+    <li>
+      <strong>Type-to-Search:</strong>
+      Blazing-fast global tag search—triggerable anywhere on the page without needing to focus on a specific input field.
+    </li>
+  </ul>
+  <h4 class="vsubtitle">Local AI Assistance (ComfyUI)</h4>
+  <div class="docs-screenshots">
+    <figure>
+      <img src="assets/images/projects/quicktag-2.webp" alt="AI Tags" />
+      <figcaption class="vnote">AI Tags</figcaption>
+    </figure>
+  </div>
+  <ul>
+    <li>
+      <strong>One-Click AI Analysis:</strong>
+      Integrates seamlessly with a local ComfyUI server
+      <code>http://127.0.0.1:8188</code>
+      powered by the WD14Tagger|pysssss node.
+    </li>
+    <li>
+      <strong>Smart Filtering & Thresholds:</strong>
+      Set custom tag confidence thresholds (default: 0.35) and maintain a custom AI Tag Blacklist to automatically ignore unwanted suggestions.
+    </li>
+    <li>
+      <strong>Seamless API Pipeline:</strong>
+      Handles automated image uploads via /upload/image, triggers execution workflows, and streams back tags by polling the queue and history API endpoints.
+    </li>
+  </ul>
+  <h4 class="vsubtitle">Customization & Window Management</h4>
+  <ul>
+    <li>
+      <strong>Docking & Floating Modes:</strong>
+      Free-float the window anywhere or dock it to any screen edge (Top, Bottom, Left, Right).
+    </li>
+    <li>
+      <strong>Ghost Mode:</strong>
+      Toggle instant window transparency via a customizable hotkey or top-bar icon to inspect the underlying webpage without hiding your panel. Features an
+      optional "Hold-to-view" mode.
+    </li>
+    <li>
+      <strong>Visual Themes & Scaling:</strong>
+      Includes 6 built-in color themes, an ambient Custom Color Picker, and a window scale slider.
+    </li>
+  </ul>
+  <h4 class="vsubtitle">Built-in JSON Editor</h4>
+  <div class="docs-screenshots">
+    <figure>
+      <img src="assets/images/projects/quicktag-3.webp" alt="Built-In Editor with easyJson mode on" />
+      <figcaption class="vnote">Built-In Editor with easyJson mode on</figcaption>
+    </figure>
+  </div>
+  <ul>
+    <li>
+      <strong>EasyJSON Mode:</strong>
+      Edit tag palettes visually without touching raw JSON syntax or worrying about missing commas.
+    </li>
+    <li>
+      <strong>Power-User Tooling:</strong>
+      Word-wrap support, instant JSON formatting, standard keyboard shortcuts, and live-reloading—changes update in the main interface immediately upon saving.
+    </li>
+  </ul>
 </div>
