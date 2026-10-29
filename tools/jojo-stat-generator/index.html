@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoJo Stand Stat Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #6366f1; }
+        html, body { height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #0b0d12; color: #e5e7eb; }
+
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; height: 18px; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: #2a2f3a; }
+        input[type=range]::-moz-range-track { height: 4px; border-radius: 2px; background: #2a2f3a; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: var(--accent); margin-top: -5px; border: 2px solid #0b0d12; cursor: pointer;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 12px; width: 12px; border-radius: 50%; background: var(--accent); border: 2px solid #0b0d12; cursor: pointer;
+        }
+        input[type=range]:disabled::-webkit-slider-thumb { background: #4b4f5a; }
+        input[type=range]:disabled { opacity: .4; }
+        input[type=color] { -webkit-appearance: none; appearance: none; padding: 0; border: 1px solid #2a2f3a; border-radius: 6px; background: none; cursor: pointer; }
+        input[type=color]::-webkit-color-swatch-wrapper { padding: 2px; }
+        input[type=color]::-webkit-color-swatch { border: none; border-radius: 4px; }
+        select { color-scheme: dark; }
+
+        .panel { background: #12151c; border: 1px solid #222733; border-radius: 12px; }
+        .label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #8b93a5; }
+        .btn { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; border: 1px solid #2a2f3a; background: #1a1e28; color: #e5e7eb; transition: background .15s; }
+        .btn:hover { background: #242a37; }
+        .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #4f52d9; }
+        .btn-sm { font-size: 11px; padding: 4px 9px; border-radius: 6px; }
+        .field-row { display: grid; grid-template-columns: 80px 1fr 40px; align-items: center; gap: 8px; }
+        .field-row2 { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+        .sub-head { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #a5adbe; display:flex; align-items:center; }
+
+        /* Checkerboard to show transparency in preview */
+        .checker {
+            background-color: #151922;
+            background-image:
+                linear-gradient(45deg, #1b202b 25%, transparent 25%, transparent 75%, #1b202b 75%),
+                linear-gradient(45deg, #1b202b 25%, transparent 25%, transparent 75%, #1b202b 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #2a2f3a; border-radius: 3px; }
+
+        /* Help tooltip bubbles */
+        .help {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 15px; height: 15px; border-radius: 50%; background: #2a2f3a; color: #aab2c5;
+            font-size: 10px; font-weight: 700; cursor: help; position: relative; flex-shrink: 0;
+            margin-left: 5px; user-select: none; border: 1px solid #343b4a;
+        }
+        .help:hover, .help:focus { background: var(--accent); color: #fff; }
+        .help::after {
+            content: attr(data-tip);
+            position: absolute; bottom: 135%; left: 50%; transform: translateX(-50%);
+            width: max-content; max-width: 220px; background: #1a1e28; border: 1px solid #333a4a;
+            color: #e5e7eb; font-weight: 400; font-size: 11px; line-height: 1.4; padding: 7px 9px;
+            border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.45);
+            opacity: 0; pointer-events: none; transition: opacity .12s ease; z-index: 60; text-align: left;
+            white-space: normal;
+        }
+        .help:hover::after, .help:focus::after { opacity: 1; }
+        details.group-panel > summary { cursor: pointer; list-style: none; }
+        details.group-panel > summary::-webkit-details-marker { display: none; }
+        .chev { transition: transform .15s ease; }
+        details[open] .chev { transform: rotate(90deg); }
+
+        @media (min-width: 1024px) {
+            body { overflow: hidden; }
+        }
+    </style>
+</head>
+<body class="flex flex-col lg:h-screen">
+
+    <header class="shrink-0 border-b border-[#222733] bg-[#0f1218]">
+        <div class="px-5 py-2.5 flex items-center justify-between">
+            <h1 class="text-sm font-semibold tracking-wide text-white">JoJo Stand Stat Generator</h1>
+            <span class="text-[11px] text-slate-500">Stat wheel designer</span>
+        </div>
+    </header>
+
+    <main class="flex-1 min-h-0 p-4 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
+
+        <!-- CONTROLS -->
+        <section class="min-h-0 flex flex-col gap-4 lg:overflow-y-auto lg:pr-1">
+
+            <div class="panel p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="label">Stats</h2>
+                    <button id="btnRandomize" class="btn">Randomize</button>
+                </div>
+                <div id="slidersContainer" class="space-y-1.5"></div>
+                <label class="flex items-center gap-2 mt-3 pt-3 border-t border-[#222733] cursor-pointer select-none">
+                    <input type="checkbox" id="toggleSToQuestion" class="w-3.5 h-3.5 rounded accent-indigo-500">
+                    <span class="text-xs text-slate-300">Show "?" instead of S / ∞</span>
+                </label>
+            </div>
+
+            <div class="panel p-4 space-y-3">
+                <h2 class="label flex items-center">Colors &amp; Fill
+                    <span class="help" tabindex="0" data-tip="Kolory i przezroczystość wielokąta statystyk oraz siatki.">?</span>
+                </h2>
+
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2.5">
+                    <select id="fillModeInput" class="bg-[#1a1e28] border border-[#2a2f3a] rounded-md text-xs text-slate-200 py-1 px-1.5 w-full">
+                        <option value="solid">Stats: Solid</option>
+                        <option value="gradient">Stats: Gradient</option>
+                    </select>
+                    <input type="color" id="polyColorInput" value="#ff0000" class="w-9 h-7">
+                    <div class="flex items-center gap-2">
+                        <input type="range" id="polyAlphaInput" min="0" max="1" step="0.01" value="0.85">
+                        <span id="polyAlphaVal" class="text-[11px] text-slate-400 w-9 text-right tabular-nums">85%</span>
+                    </div>
+
+                    <div id="gradControls" class="col-span-3 hidden rounded-lg border border-[#222733] p-2.5 space-y-2">
+                        <div class="grid grid-cols-[auto_auto_1fr] items-center gap-x-3">
+                            <span class="text-xs text-slate-300">Color 2</span>
+                            <input type="color" id="polyColor2Input" value="#ffd000" class="w-9 h-7">
+                            <select id="gradTypeInput" class="bg-[#1a1e28] border border-[#2a2f3a] rounded-md text-xs text-slate-200 py-1 px-1.5 w-full">
+                                <option value="linear">Linear</option>
+                                <option value="radial">Radial</option>
+                            </select>
+                        </div>
+                        <div id="gradAngleRow" class="grid grid-cols-[80px_1fr_36px] items-center gap-2">
+                            <span class="text-xs text-slate-300">Angle</span>
+                            <input type="range" id="gradAngleInput" min="0" max="360" step="1" value="90">
+                            <span id="gradAngleVal" class="text-[11px] text-slate-400 text-right tabular-nums">90°</span>
+                        </div>
+                        <div class="grid grid-cols-[80px_1fr_36px] items-center gap-2">
+                            <span class="text-xs text-slate-300">Color 1 stop</span>
+                            <input type="range" id="gradStart" min="0" max="100" step="1" value="0">
+                            <span id="gradStartVal" class="text-[11px] text-slate-400 text-right tabular-nums">0%</span>
+                        </div>
+                        <div class="grid grid-cols-[80px_1fr_36px] items-center gap-2">
+                            <span class="text-xs text-slate-300">Color 2 stop</span>
+                            <input type="range" id="gradEnd" min="0" max="100" step="1" value="100">
+                            <span id="gradEndVal" class="text-[11px] text-slate-400 text-right tabular-nums">100%</span>
+                        </div>
+                    </div>
+
+                    <span class="text-xs text-slate-300">Grid &amp; text</span>
+                    <input type="color" id="overlayColorInput" value="#000000" class="w-9 h-7">
+                    <div class="flex items-center gap-2">
+                        <input type="range" id="gridAlphaInput" min="0" max="1" step="0.01" value="1">
+                        <span id="gridAlphaVal" class="text-[11px] text-slate-400 w-9 text-right tabular-nums">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BACKGROUND IMAGE PANEL -->
+            <details class="panel p-4" open>
+                <summary class="flex items-center justify-between">
+                    <h2 class="label flex items-center"><svg class="chev w-3 h-3 mr-1.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"/></svg>Background image
+                        <span class="help" tabindex="0" data-tip="Wgraj własne tło i dopasuj je względem maski statystyk: przesuwaj, skaluj i obracaj.">?</span>
+                    </h2>
+                </summary>
+
+                <div class="mt-3 space-y-3">
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs text-slate-300">Image file</span>
+                            <button id="btnClearBg" class="text-[11px] text-slate-400 hover:text-white underline">Remove</button>
+                        </div>
+                        <input type="file" id="bgImageInput" accept="image/*"
+                            class="block w-full text-xs text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#1a1e28] file:text-slate-200 hover:file:bg-[#242a37] cursor-pointer">
+                    </div>
+
+                    <p class="text-[11px] text-slate-500 bg-[#161a23] border border-[#222733] rounded-md px-2.5 py-2 leading-relaxed">
+                        Przeciągnij obraz myszką na podglądzie, aby go przesunąć, oraz użyj scrolla, aby przybliżyć / oddalić.
+                    </p>
+
+                    <div class="field-row2">
+                        <span class="text-xs text-slate-300 flex items-center">Fit mode
+                            <span class="help" tabindex="0" data-tip="Cover: wypełnia koło i przycina nadmiar. Contain: mieści cały obraz w kole. Stretch: rozciąga obraz do kwadratu bez zachowania proporcji.">?</span>
+                        </span>
+                        <select id="bgFitInput" class="bg-[#1a1e28] border border-[#2a2f3a] rounded-md text-xs text-slate-200 py-1 px-2">
+                            <option value="cover">Cover</option>
+                            <option value="contain">Contain</option>
+                            <option value="stretch">Stretch</option>
+                        </select>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="text-xs text-slate-300">Opacity</span>
+                        <input type="range" id="bgAlphaInput" min="0" max="1" step="0.01" value="1">
+                        <span id="bgAlphaVal" class="text-[11px] text-slate-400 text-right tabular-nums">100%</span>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="text-xs text-slate-300">Zoom</span>
+                        <input type="range" id="bgScaleInput" min="0.2" max="5" step="0.01" value="1">
+                        <span id="bgScaleVal" class="text-[11px] text-slate-400 text-right tabular-nums">100%</span>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="text-xs text-slate-300">Offset X</span>
+                        <input type="range" id="bgOffsetXInput" min="-300" max="300" step="1" value="0">
+                        <span id="bgOffsetXVal" class="text-[11px] text-slate-400 text-right tabular-nums">0</span>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="text-xs text-slate-300">Offset Y</span>
+                        <input type="range" id="bgOffsetYInput" min="-300" max="300" step="1" value="0">
+                        <span id="bgOffsetYVal" class="text-[11px] text-slate-400 text-right tabular-nums">0</span>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="text-xs text-slate-300">Rotation</span>
+                        <input type="range" id="bgRotationInput" min="0" max="360" step="1" value="0">
+                        <span id="bgRotationVal" class="text-[11px] text-slate-400 text-right tabular-nums">0°</span>
+                    </div>
+
+                    <div class="field-row2 pt-1 border-t border-[#222733]">
+                        <span class="text-xs text-slate-300 flex items-center">Base / wheel color
+                            <span class="help" tabindex="0" data-tip="Kolor widoczny gdy nie ma wgranego obrazka, lub prześwitujący przez przezroczyste piksele obrazka.">?</span>
+                        </span>
+                        <input type="color" id="badgeBgColorInput" value="#ffffff" class="w-9 h-7">
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button id="btnResetBg" class="btn btn-sm">Reset position</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MASK / LAYOUT PANEL -->
+            <details class="panel p-4">
+                <summary class="flex items-center justify-between">
+                    <h2 class="label flex items-center"><svg class="chev w-3 h-3 mr-1.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"/></svg>Mask &amp; layout
+                        <span class="help" tabindex="0" data-tip="Dostosuj wygląd samej maski statystyk: czcionkę, rozmiary, odległości elementów oraz przyciemnienie wnętrza okręgów (przydatne dla czytelności na tle zdjęcia).">?</span>
+                    </h2>
+                </summary>
+
+                <div class="mt-3 space-y-4">
+                    <div>
+                        <div class="sub-head mb-2">Typography</div>
+                        <div class="space-y-2">
+                            <div class="field-row2">
+                                <span class="text-xs text-slate-300">Font family</span>
+                                <select id="maskFontFamily" class="bg-[#1a1e28] border border-[#2a2f3a] rounded-md text-xs text-slate-200 py-1 px-2">
+                                    <option value="'Oswald', sans-serif">Oswald</option>
+                                    <option value="'Inter', sans-serif">Inter</option>
+                                    <option value="Arial, sans-serif">Arial</option>
+                                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                                    <option value="Georgia, serif">Georgia</option>
+                                    <option value="Impact, sans-serif">Impact</option>
+                                    <option value="'Courier New', monospace">Courier New</option>
+                                </select>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300">Label size</span>
+                                <input type="range" id="maskLabelFont" min="8" max="28" step="1" value="15">
+                                <span id="maskLabelFontVal" class="text-[11px] text-slate-400 text-right tabular-nums">15</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300">Tier size</span>
+                                <input type="range" id="maskTierFont" min="10" max="40" step="1" value="26">
+                                <span id="maskTierFontVal" class="text-[11px] text-slate-400 text-right tabular-nums">26</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300">E-A letters</span>
+                                <input type="range" id="maskLetterFont" min="6" max="20" step="1" value="11">
+                                <span id="maskLetterFontVal" class="text-[11px] text-slate-400 text-right tabular-nums">11</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300 flex items-center">Letter gap
+                                    <span class="help" tabindex="0" data-tip="Odstęp pomiędzy literami w nazwach statystyk wygiętych na łuku.">?</span>
+                                </span>
+                                <input type="range" id="maskLetterSpacing" min="0" max="6" step="0.1" value="1.5">
+                                <span id="maskLetterSpacingVal" class="text-[11px] text-slate-400 text-right tabular-nums">1.5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sub-head mb-2">Geometry</div>
+                        <div class="space-y-2">
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300 flex items-center">Outer radius
+                                    <span class="help" tabindex="0" data-tip="Promień zewnętrznego okręgu / obrzeża maski.">?</span>
+                                </span>
+                                <input type="range" id="maskOuterRadius" min="180" max="258" step="1" value="245">
+                                <span id="maskOuterRadiusVal" class="text-[11px] text-slate-400 text-right tabular-nums">245</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300 flex items-center">Inner radius
+                                    <span class="help" tabindex="0" data-tip="Promień wewnętrznego okręgu, w którym rysowany jest wielokąt statystyk.">?</span>
+                                </span>
+                                <input type="range" id="maskInnerRadius" min="60" max="230" step="1" value="165">
+                                <span id="maskInnerRadiusVal" class="text-[11px] text-slate-400 text-right tabular-nums">165</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300">Label distance</span>
+                                <input type="range" id="maskLabelOffset" min="0" max="80" step="1" value="30">
+                                <span id="maskLabelOffsetVal" class="text-[11px] text-slate-400 text-right tabular-nums">30</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300">Tier distance</span>
+                                <input type="range" id="maskTierOffset" min="0" max="80" step="1" value="22">
+                                <span id="maskTierOffsetVal" class="text-[11px] text-slate-400 text-right tabular-nums">22</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="text-xs text-slate-300 flex items-center">Line weight
+                                    <span class="help" tabindex="0" data-tip="Grubość wszystkich linii siatki, okręgów i znaczników.">?</span>
+                                </span>
+                                <input type="range" id="maskGridWidth" min="0.3" max="3" step="0.1" value="1">
+                                <span id="maskGridWidthVal" class="text-[11px] text-slate-400 text-right tabular-nums">1.0x</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sub-head mb-2 flex items-center">Contrast shading
+                            <span class="help" tabindex="0" data-tip="Dodatkowe przyciemnienie / rozjaśnienie wewnątrz okręgów maski, niezależne od tła — ułatwia czytanie tekstu na jasnych lub ruchliwych obrazkach.">?</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2">
+                                <span class="text-xs text-slate-300">Inner circle</span>
+                                <input type="color" id="innerShadeColor" value="#000000" class="w-9 h-7">
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="innerShadeAlpha" min="0" max="1" step="0.01" value="0">
+                                    <span id="innerShadeAlphaVal" class="text-[11px] text-slate-400 w-9 text-right tabular-nums">0%</span>
+                                </div>
+                                <span class="text-xs text-slate-300">Outer ring</span>
+                                <input type="color" id="ringShadeColor" value="#000000" class="w-9 h-7">
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="ringShadeAlpha" min="0" max="1" step="0.01" value="0">
+                                    <span id="ringShadeAlphaVal" class="text-[11px] text-slate-400 w-9 text-right tabular-nums">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-1 border-t border-[#222733]">
+                        <button id="btnResetMask" class="btn btn-sm">Reset layout</button>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- PREVIEW -->
+        <section class="min-h-0 flex flex-col gap-3">
+            <div class="shrink-0 flex items-center justify-between">
+                <h2 class="label">Preview</h2>
+                <div class="flex items-center gap-2">
+                    <button id="btnTemplate" class="btn" title="Square guide image matching the generator's dimensions">Download template</button>
+                    <button id="btnCopyMD" class="btn">Copy Markdown</button>
+                    <button id="btnExportPNG" class="btn btn-primary">Download PNG</button>
+                </div>
+            </div>
+            <div class="panel checker flex-1 min-h-0 p-4 flex items-center justify-center overflow-hidden">
+                <canvas id="radarCanvas" width="1100" height="1100"
+                    class="block"
+                    style="width:100%; height:100%; object-fit:contain; max-height:70vh;"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="fixed bottom-5 right-5 bg-[#1a1e28] border border-[#2a2f3a] text-white px-4 py-2 rounded-lg shadow-2xl text-xs hidden z-50">
+        <span id="toastMsg"></span>
+    </div>
+
+    <script>
+        const STAT_KEYS = [
+            { id: 'power',      label: 'POWER' },
+            { id: 'speed',      label: 'SPEED' },
+            { id: 'range',      label: 'RANGE' },
+            { id: 'durability', label: 'DURABILITY' },
+            { id: 'precision',  label: 'PRECISION' },
+            { id: 'potential',  label: 'POTENTIAL' }
+        ];
+        const TIERS = ['NONE', 'E', 'D', 'C', 'B', 'A', 'S', '∞'];
+        const RING_PADDING = 12; // fixed breathing room between outer radius and the badge edge
+
+        const DEFAULT_BG = { scale: 1, offsetX: 0, offsetY: 0, rotation: 0, fit: 'cover' };
+        const DEFAULT_MASK = {
+            outerRadius: 245, innerRadius: 165,
+            fontFamily: "'Oswald', sans-serif",
+            labelFontSize: 15, tierFontSize: 26, letterFontSize: 11, letterSpacing: 1.5,
+            labelOffset: 30, tierOffset: 22, gridWidth: 1,
+            innerShadeColor: '#000000', innerShadeAlpha: 0,
+            ringShadeColor: '#000000', ringShadeAlpha: 0
+        };
+
+        const state = {
+            stats: { power: 4, speed: 5, range: 7, durability: 7, precision: 5, potential: 1 },
+            convertSToQuestion: false,
+            polyColor: '#ff0000', polyAlpha: 0.85,
+            fillMode: 'solid', polyColor2: '#ffd000', gradType: 'linear',
+            gradAngle: 90, gradStart: 0, gradEnd: 100,
+            overlayColor: '#000000', gridAlpha: 1,
+            badgeBgColor: '#ffffff', bgAlpha: 1,
+            bgImage: null,
+            bg: { ...DEFAULT_BG },
+            mask: { ...DEFAULT_MASK }
+        };
+
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        const LOGICAL = 550;               // drawing coordinate space
+        const SCALE = canvas.width / LOGICAL; // hi-res backing store
+
+        function getDisplayTier(tier) {
+            return (state.convertSToQuestion && (tier === 'S' || tier === '∞')) ? '?' : tier;
+        }
+
+        /* ---------- generic binding helper ---------- */
+        function bindRange(inputId, labelId, onChange, formatter) {
+            const el = document.getElementById(inputId);
+            const lbl = labelId ? document.getElementById(labelId) : null;
+            el.addEventListener('input', e => {
+                const v = parseFloat(e.target.value);
+                onChange(v);
+                if (lbl) lbl.textContent = formatter ? formatter(v) : v;
+                drawRadar();
+            });
+        }
+        function bindColor(inputId, onChange) {
+            document.getElementById(inputId).addEventListener('input', e => { onChange(e.target.value); drawRadar(); });
+        }
+        function bindSelect(inputId, onChange) {
+            document.getElementById(inputId).addEventListener('change', e => { onChange(e.target.value); drawRadar(); });
+        }
+
+        /* ---------- UI: stats ---------- */
+        function renderSliders() {
+            const c = document.getElementById('slidersContainer');
+            c.innerHTML = STAT_KEYS.map(s => `
+                <div class="grid grid-cols-[88px_1fr_32px] items-center gap-3">
+                    <span class="text-xs font-medium text-slate-300 tracking-wide">${s.label}</span>
+                    <input type="range" id="slider_${s.id}" min="0" max="7" step="1" value="${state.stats[s.id]}">
+                    <span id="val_${s.id}" class="text-sm font-semibold text-white text-right tabular-nums">${getDisplayTier(TIERS[state.stats[s.id]])}</span>
+                </div>`).join('');
+            STAT_KEYS.forEach(s => {
+                document.getElementById(`slider_${s.id}`).addEventListener('input', e => {
+                    state.stats[s.id] = parseInt(e.target.value, 10);
+                    refreshValueLabels();
+                    drawRadar();
+                });
+            });
+        }
+
+        function refreshValueLabels() {
+            STAT_KEYS.forEach(s => {
+                document.getElementById(`val_${s.id}`).textContent = getDisplayTier(TIERS[state.stats[s.id]]);
+            });
+        }
+
+        /* ---------- sync UI from state (used after reset / drag / wheel) ---------- */
+        function syncBgInputs() {
+            document.getElementById('bgFitInput').value = state.bg.fit;
+            document.getElementById('bgScaleInput').value = state.bg.scale;
+            document.getElementById('bgScaleVal').textContent = Math.round(state.bg.scale * 100) + '%';
+            document.getElementById('bgOffsetXInput').value = state.bg.offsetX;
+            document.getElementById('bgOffsetXVal').textContent = Math.round(state.bg.offsetX);
+            document.getElementById('bgOffsetYInput').value = state.bg.offsetY;
+            document.getElementById('bgOffsetYVal').textContent = Math.round(state.bg.offsetY);
+            document.getElementById('bgRotationInput').value = state.bg.rotation;
+            document.getElementById('bgRotationVal').textContent = Math.round(state.bg.rotation) + '°';
+        }
+        function syncMaskInputs() {
+            const m = state.mask;
+            document.getElementById('maskFontFamily').value = m.fontFamily;
+            document.getElementById('maskLabelFont').value = m.labelFontSize;
+            document.getElementById('maskLabelFontVal').textContent = m.labelFontSize;
+            document.getElementById('maskTierFont').value = m.tierFontSize;
+            document.getElementById('maskTierFontVal').textContent = m.tierFontSize;
+            document.getElementById('maskLetterFont').value = m.letterFontSize;
+            document.getElementById('maskLetterFontVal').textContent = m.letterFontSize;
+            document.getElementById('maskLetterSpacing').value = m.letterSpacing;
+            document.getElementById('maskLetterSpacingVal').textContent = m.letterSpacing;
+            document.getElementById('maskOuterRadius').value = m.outerRadius;
+            document.getElementById('maskOuterRadiusVal').textContent = m.outerRadius;
+            document.getElementById('maskInnerRadius').value = m.innerRadius;
+            document.getElementById('maskInnerRadiusVal').textContent = m.innerRadius;
+            document.getElementById('maskLabelOffset').value = m.labelOffset;
+            document.getElementById('maskLabelOffsetVal').textContent = m.labelOffset;
+            document.getElementById('maskTierOffset').value = m.tierOffset;
+            document.getElementById('maskTierOffsetVal').textContent = m.tierOffset;
+            document.getElementById('maskGridWidth').value = m.gridWidth;
+            document.getElementById('maskGridWidthVal').textContent = m.gridWidth.toFixed(1) + 'x';
+            document.getElementById('innerShadeColor').value = m.innerShadeColor;
+            document.getElementById('innerShadeAlpha').value = m.innerShadeAlpha;
+            document.getElementById('innerShadeAlphaVal').textContent = Math.round(m.innerShadeAlpha * 100) + '%';
+            document.getElementById('ringShadeColor').value = m.ringShadeColor;
+            document.getElementById('ringShadeAlpha').value = m.ringShadeAlpha;
+            document.getElementById('ringShadeAlphaVal').textContent = Math.round(m.ringShadeAlpha * 100) + '%';
+        }
+
+        function attachEvents() {
+            document.getElementById('toggleSToQuestion').addEventListener('change', e => {
+                state.convertSToQuestion = e.target.checked;
+                refreshValueLabels();
+                drawRadar();
+            });
+
+            bindColor('polyColorInput', v => state.polyColor = v);
+            bindColor('overlayColorInput', v => state.overlayColor = v);
+            bindColor('badgeBgColorInput', v => state.badgeBgColor = v);
+            bindRange('polyAlphaInput', 'polyAlphaVal', v => state.polyAlpha = v, v => Math.round(v * 100) + '%');
+            bindRange('gridAlphaInput', 'gridAlphaVal', v => state.gridAlpha = v, v => Math.round(v * 100) + '%');
+            bindRange('bgAlphaInput', 'bgAlphaVal', v => state.bgAlpha = v, v => Math.round(v * 100) + '%');
+
+            // Gradient controls
+            const syncGradUI = () => {
+                document.getElementById('gradControls').classList.toggle('hidden', state.fillMode !== 'gradient');
+                document.getElementById('gradAngleRow').style.opacity = state.gradType === 'linear' ? 1 : 0.35;
+                document.getElementById('gradAngleInput').disabled = state.gradType !== 'linear';
+            };
+            bindSelect('fillModeInput', v => { state.fillMode = v; syncGradUI(); });
+            bindSelect('gradTypeInput', v => { state.gradType = v; syncGradUI(); });
+            bindColor('polyColor2Input', v => state.polyColor2 = v);
+            bindRange('gradAngleInput', 'gradAngleVal', v => state.gradAngle = v, v => v + '°');
+            bindRange('gradStart', 'gradStartVal', v => state.gradStart = v, v => v + '%');
+            bindRange('gradEnd', 'gradEndVal', v => state.gradEnd = v, v => v + '%');
+            syncGradUI();
+
+            document.getElementById('btnTemplate').addEventListener('click', downloadTemplate);
+
+            /* ----- background image ----- */
+            document.getElementById('bgImageInput').addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const img = new Image();
+                    img.onload = () => {
+                        state.bgImage = img;
+                        state.bg = { ...DEFAULT_BG, fit: state.bg.fit };
+                        syncBgInputs();
+                        updateCanvasCursor();
+                        drawRadar();
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+            document.getElementById('btnClearBg').addEventListener('click', () => {
+                state.bgImage = null;
+                document.getElementById('bgImageInput').value = '';
+                updateCanvasCursor();
+                drawRadar();
+            });
+            document.getElementById('btnResetBg').addEventListener('click', () => {
+                state.bg = { ...DEFAULT_BG };
+                syncBgInputs();
+                drawRadar();
+            });
+
+            bindSelect('bgFitInput', v => state.bg.fit = v);
+            bindRange('bgScaleInput', 'bgScaleVal', v => state.bg.scale = v, v => Math.round(v * 100) + '%');
+            bindRange('bgOffsetXInput', 'bgOffsetXVal', v => state.bg.offsetX = v, v => Math.round(v));
+            bindRange('bgOffsetYInput', 'bgOffsetYVal', v => state.bg.offsetY = v, v => Math.round(v));
+            bindRange('bgRotationInput', 'bgRotationVal', v => state.bg.rotation = v, v => Math.round(v) + '°');
+
+            /* ----- mask / layout ----- */
+            bindSelect('maskFontFamily', v => state.mask.fontFamily = v);
+            bindRange('maskLabelFont', 'maskLabelFontVal', v => state.mask.labelFontSize = v);
+            bindRange('maskTierFont', 'maskTierFontVal', v => state.mask.tierFontSize = v);
+            bindRange('maskLetterFont', 'maskLetterFontVal', v => state.mask.letterFontSize = v);
+            bindRange('maskLetterSpacing', 'maskLetterSpacingVal', v => state.mask.letterSpacing = v, v => v.toFixed(1));
+            bindRange('maskOuterRadius', 'maskOuterRadiusVal', v => state.mask.outerRadius = v);
+            bindRange('maskInnerRadius', 'maskInnerRadiusVal', v => state.mask.innerRadius = v);
+            bindRange('maskLabelOffset', 'maskLabelOffsetVal', v => state.mask.labelOffset = v);
+            bindRange('maskTierOffset', 'maskTierOffsetVal', v => state.mask.tierOffset = v);
+            bindRange('maskGridWidth', 'maskGridWidthVal', v => state.mask.gridWidth = v, v => v.toFixed(1) + 'x');
+            bindColor('innerShadeColor', v => state.mask.innerShadeColor = v);
+            bindRange('innerShadeAlpha', 'innerShadeAlphaVal', v => state.mask.innerShadeAlpha = v, v => Math.round(v * 100) + '%');
+            bindColor('ringShadeColor', v => state.mask.ringShadeColor = v);
+            bindRange('ringShadeAlpha', 'ringShadeAlphaVal', v => state.mask.ringShadeAlpha = v, v => Math.round(v * 100) + '%');
+
+            document.getElementById('btnResetMask').addEventListener('click', () => {
+                state.mask = { ...DEFAULT_MASK };
+                syncMaskInputs();
+                drawRadar();
+            });
+
+            document.getElementById('btnRandomize').addEventListener('click', () => {
+                STAT_KEYS.forEach(s => {
+                    const v = Math.floor(Math.random() * 7) + 1;
+                    state.stats[s.id] = v;
+                    document.getElementById(`slider_${s.id}`).value = v;
+                });
+                refreshValueLabels();
+                drawRadar();
+            });
+            document.getElementById('btnExportPNG').addEventListener('click', exportPNG);
+            document.getElementById('btnCopyMD').addEventListener('click', () => copyToClipboard(buildMarkdown()));
+
+            attachCanvasDragAndZoom();
+        }
+
+        /* ---------- Canvas drag-to-pan & scroll-to-zoom for the background image ---------- */
+        function updateCanvasCursor() {
+            canvas.style.cursor = state.bgImage ? 'grab' : 'default';
+        }
+
+        function attachCanvasDragAndZoom() {
+            let dragging = false, lastX = 0, lastY = 0;
+
+            function toLogicalDelta(dx, dy) {
+                const rect = canvas.getBoundingClientRect();
+                const ratio = LOGICAL / rect.width;
+                return { dx: dx * ratio, dy: dy * ratio };
+            }
+
+            canvas.addEventListener('mousedown', e => {
+                if (!state.bgImage) return;
+                dragging = true; lastX = e.clientX; lastY = e.clientY;
+                canvas.style.cursor = 'grabbing';
+            });
+            window.addEventListener('mousemove', e => {
+                if (!dragging) return;
+                const { dx, dy } = toLogicalDelta(e.clientX - lastX, e.clientY - lastY);
+                state.bg.offsetX += dx; state.bg.offsetY += dy;
+                lastX = e.clientX; lastY = e.clientY;
+                syncBgInputs(); drawRadar();
+            });
+            window.addEventListener('mouseup', () => { dragging = false; updateCanvasCursor(); });
+
+            canvas.addEventListener('wheel', e => {
+                if (!state.bgImage) return;
+                e.preventDefault();
+                const delta = e.deltaY < 0 ? 0.06 : -0.06;
+                state.bg.scale = Math.min(5, Math.max(0.2, state.bg.scale + delta));
+                syncBgInputs(); drawRadar();
+            }, { passive: false });
+
+            // touch support
+            canvas.addEventListener('touchstart', e => {
+                if (!state.bgImage || e.touches.length !== 1) return;
+                dragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+            }, { passive: true });
+            canvas.addEventListener('touchmove', e => {
+                if (!dragging || e.touches.length !== 1) return;
+                e.preventDefault();
+                const { dx, dy } = toLogicalDelta(e.touches[0].clientX - lastX, e.touches[0].clientY - lastY);
+                state.bg.offsetX += dx; state.bg.offsetY += dy;
+                lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+                syncBgInputs(); drawRadar();
+            }, { passive: false });
+            window.addEventListener('touchend', () => { dragging = false; });
+        }
+
+        /* ---------- Drawing ---------- */
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#', '');
+            if (c.length === 3) c = c.split('').map(x => x + x).join('');
+            const n = parseInt(c, 16);
+            return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+        }
+
+        // Text along an arc, centered on `angle`; flipped on the lower half so it stays readable.
+        function drawArcText(text, cx, cy, radius, angle, font, color, spacing) {
+            ctx.save();
+            ctx.font = font;
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const chars = [...text];
+            const widths = chars.map(ch => ctx.measureText(ch).width + spacing);
+            const total = widths.reduce((a, b) => a + b, 0) / radius;
+            const bottom = Math.sin(angle) > 0.01;
+
+            let a = bottom ? angle + total / 2 : angle - total / 2;
+            chars.forEach((ch, i) => {
+                const half = (widths[i] / radius) / 2;
+                a += bottom ? -half : half;
+                ctx.save();
+                ctx.translate(cx + radius * Math.cos(a), cy + radius * Math.sin(a));
+                ctx.rotate(bottom ? a - Math.PI / 2 : a + Math.PI / 2);
+                ctx.fillText(ch, 0, 0);
+                ctx.restore();
+                a += bottom ? -half : half;
+            });
+            ctx.restore();
+        }
+
+        function getFillStyle(cx, cy, r) {
+            if (state.fillMode !== 'gradient') return hexToRgba(state.polyColor, state.polyAlpha);
+            let g;
+            if (state.gradType === 'radial') {
+                g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+            } else {
+                const a = (state.gradAngle * Math.PI) / 180;
+                const dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+                g = ctx.createLinearGradient(cx - dx, cy - dy, cx + dx, cy + dy);
+            }
+            g.addColorStop(Math.min(state.gradStart, state.gradEnd) / 100,
+                hexToRgba(state.gradStart <= state.gradEnd ? state.polyColor : state.polyColor2, state.polyAlpha));
+            g.addColorStop(Math.max(state.gradStart, state.gradEnd) / 100,
+                hexToRgba(state.gradStart <= state.gradEnd ? state.polyColor2 : state.polyColor, state.polyAlpha));
+            return g;
+        }
+
+        function drawBackgroundImage(cx, cy) {
+            const img = state.bgImage;
+            const fit = state.bg.fit;
+            ctx.save();
+            ctx.translate(cx + state.bg.offsetX, cy + state.bg.offsetY);
+            ctx.rotate((state.bg.rotation * Math.PI) / 180);
+
+            if (fit === 'stretch') {
+                const w = LOGICAL * state.bg.scale, h = LOGICAL * state.bg.scale;
+                ctx.drawImage(img, -w / 2, -h / 2, w, h);
+            } else {
+                const base = fit === 'contain'
+                    ? Math.min(LOGICAL / img.width, LOGICAL / img.height)
+                    : Math.max(LOGICAL / img.width, LOGICAL / img.height);
+                const w = img.width * base * state.bg.scale;
+                const h = img.height * base * state.bg.scale;
+                ctx.drawImage(img, -w / 2, -h / 2, w, h);
+            }
+            ctx.restore();
+        }
+
+        function drawRadar() {
+            const m = state.mask;
+            const cx = LOGICAL / 2, cy = LOGICAL / 2;
+            const outerR = m.outerRadius;
+            const innerR = Math.min(m.innerRadius, outerR - 25);
+            const lw = m.gridWidth;
+            const color = state.overlayColor;
+            const font = m.fontFamily;
+
+            ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+            ctx.clearRect(0, 0, LOGICAL, LOGICAL);
+            ctx.globalAlpha = 1;
+
+            // 1. Wheel background (solid color and/or image) with its own opacity
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, outerR + RING_PADDING, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.fillStyle = state.badgeBgColor;
+            ctx.fillRect(0, 0, LOGICAL, LOGICAL);
+            ctx.globalAlpha = state.bgAlpha;
+            if (state.bgImage) {
+                drawBackgroundImage(cx, cy);
+            }
+            ctx.restore();
+
+            // 1b. Contrast shading (independent of the background image/color)
+            if (m.ringShadeAlpha > 0) {
+                ctx.save();
+                ctx.globalAlpha = m.ringShadeAlpha;
+                ctx.fillStyle = m.ringShadeColor;
+                ctx.beginPath(); ctx.arc(cx, cy, outerR + RING_PADDING, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+            if (m.innerShadeAlpha > 0) {
+                ctx.save();
+                ctx.globalAlpha = m.innerShadeAlpha;
+                ctx.fillStyle = m.innerShadeColor;
+                ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+
+            // 2. Grid: rings + bezel ticks (grid opacity)
+            ctx.save();
+            ctx.globalAlpha = state.gridAlpha;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3 * lw;
+            ctx.beginPath(); ctx.arc(cx, cy, outerR, 0, Math.PI * 2); ctx.stroke();
+            ctx.lineWidth = 2 * lw;
+            ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.stroke();
+
+            const numTicks = 36;
+            for (let i = 0; i < numTicks; i++) {
+                const a = (i * Math.PI * 2) / numTicks;
+                const len = i % 6 === 0 ? 10 : 5;
+                ctx.beginPath();
+                ctx.moveTo(cx + outerR * Math.cos(a), cy + outerR * Math.sin(a));
+                ctx.lineTo(cx + (outerR - len) * Math.cos(a), cy + (outerR - len) * Math.sin(a));
+                ctx.lineWidth = (i % 6 === 0 ? 3 : 1.5) * lw;
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            const n = STAT_KEYS.length;
+            const step = (Math.PI * 2) / n;
+            const levels = 6;
+
+            // 3. Stat polygon
+            ctx.beginPath();
+            STAT_KEYS.forEach((s, i) => {
+                const idx = state.stats[s.id];
+                const r = (innerR / levels) * (idx === 0 ? 0 : Math.min(idx, 6));
+                const a = i * step - Math.PI / 2;
+                const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.fillStyle = getFillStyle(cx, cy, innerR);
+            ctx.fill();
+
+            // 4. Axes + step notches (grid opacity)
+            ctx.save();
+            ctx.globalAlpha = state.gridAlpha;
+            ctx.strokeStyle = color;
+            for (let i = 0; i < n; i++) {
+                const a = i * step - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + innerR * Math.cos(a), cy + innerR * Math.sin(a));
+                ctx.lineWidth = 1.5 * lw;
+                ctx.stroke();
+
+                for (let l = 1; l <= 5; l++) {
+                    const r = (innerR / levels) * l;
+                    const tx = cx + r * Math.cos(a), ty = cy + r * Math.sin(a);
+                    const p = a + Math.PI / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(tx + 4 * Math.cos(p), ty + 4 * Math.sin(p));
+                    ctx.lineTo(tx - 4 * Math.cos(p), ty - 4 * Math.sin(p));
+                    ctx.stroke();
+                }
+            }
+            ctx.restore();
+
+            // 5. Scale letters (E–A) beside the top axis, transparent background
+            ctx.fillStyle = color;
+            ctx.font = `600 ${m.letterFontSize}px ${font}`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ['E', 'D', 'C', 'B', 'A'].forEach((letter, idx) => {
+                ctx.fillText(letter, cx + 6, cy - (innerR / levels) * (idx + 1));
+            });
+
+            // 6. Ring labels (curved, centered on each axis) + tier letters (same axis, inside ring)
+            STAT_KEYS.forEach((s, i) => {
+                const a = i * step - Math.PI / 2;
+                const tier = getDisplayTier(TIERS[state.stats[s.id]]);
+
+                drawArcText(s.label, cx, cy, Math.max(10, outerR - m.labelOffset), a, `600 ${m.labelFontSize}px ${font}`, color, m.letterSpacing);
+
+                const tr = innerR + m.tierOffset;
+                ctx.save();
+                ctx.fillStyle = color;
+                ctx.font = `700 ${tier.length > 1 ? Math.round(m.tierFontSize * 0.58) : m.tierFontSize}px ${font}`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(tier, cx + tr * Math.cos(a), cy + tr * Math.sin(a) + 1);
+                ctx.restore();
+            });
+        }
+
+        /* ---------- Output ---------- */
+        function buildMarkdown() {
+            const rows = STAT_KEYS.map(s => `| **${s.label}** | \`${getDisplayTier(TIERS[state.stats[s.id]])}\` |`).join('\n');
+            return `| Parameter | Grade |\n| :--- | :---: |\n${rows}`;
+        }
+
+        function downloadTemplate() {
+            const size = canvas.width;
+            const c = document.createElement('canvas');
+            c.width = size; c.height = size;
+            const t = c.getContext('2d');
+            t.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+            const cx = LOGICAL / 2, cy = LOGICAL / 2;
+            const outerR = state.mask.outerRadius;
+            const innerR = Math.min(state.mask.innerRadius, outerR - 25);
+
+            t.fillStyle = '#1f232d';
+            t.fillRect(0, 0, LOGICAL, LOGICAL);
+
+            // Visible wheel area
+            t.beginPath(); t.arc(cx, cy, outerR + RING_PADDING, 0, Math.PI * 2);
+            t.fillStyle = '#3b4150'; t.fill();
+
+            // Guides
+            t.strokeStyle = 'rgba(255,255,255,0.55)';
+            t.lineWidth = 1.5;
+            [outerR, innerR].forEach(r => { t.beginPath(); t.arc(cx, cy, r, 0, Math.PI * 2); t.stroke(); });
+            const n = STAT_KEYS.length;
+            for (let i = 0; i < n; i++) {
+                const a = (i * Math.PI * 2) / n - Math.PI / 2;
+                t.beginPath(); t.moveTo(cx, cy);
+                t.lineTo(cx + innerR * Math.cos(a), cy + innerR * Math.sin(a));
+                t.stroke();
+            }
+            t.setLineDash([6, 5]);
+            t.strokeStyle = '#818cf8';
+            t.lineWidth = 2;
+            t.beginPath(); t.arc(cx, cy, outerR + RING_PADDING, 0, Math.PI * 2); t.stroke();
+            t.setLineDash([]);
+
+            t.fillStyle = 'rgba(255,255,255,0.6)';
+            t.font = '500 10px Inter, sans-serif';
+            t.textAlign = 'left';
+            t.textBaseline = 'top';
+            t.fillText(`${size} x ${size} px  |  Only the area inside the dashed circle is visible. Replace this layer with your artwork.`, 8, 8);
+
+            const link = document.createElement('a');
+            link.download = `stand_wheel_template_${size}x${size}.png`;
+            link.href = c.toDataURL('image/png');
+            link.click();
+            showToast('Template downloaded');
+        }
+
+        function exportPNG() {
+            const link = document.createElement('a');
+            link.download = 'stand_stat_wheel.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('PNG downloaded');
+        }
+
+        function copyToClipboard(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('Markdown copied to clipboard');
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.add('hidden'), 2500);
+        }
+
+        /* ---------- Init ---------- */
+        window.addEventListener('load', () => {
+            renderSliders();
+            attachEvents();
+            syncBgInputs();
+            syncMaskInputs();
+            updateCanvasCursor();
+            drawRadar();
+            if (document.fonts && document.fonts.load) {
+                Promise.all([
+                    document.fonts.load('600 15px "Oswald"'),
+                    document.fonts.load('700 26px "Oswald"')
+                ]).then(drawRadar).catch(() => {});
+            }
+        });
+    </script>
+</body>
+</html>

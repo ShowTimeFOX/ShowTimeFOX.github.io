@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VectorCraft – Pomoc</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e15;--p1:#111827;--p2:#0d1320;--ln:#1f2937;--ln2:#2a3547;--tx:#dfe5ee;--mu:#8b95a7;--ac:#3b82f6;--ac2:#60a5fa;--ok:#34d399;--wn:#fbbf24}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--ac2);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{display:flex;min-height:100vh}
+nav{width:270px;flex:none;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--p1);border-right:1px solid var(--ln);padding:20px 16px}
+nav .logo{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-weight:700;font-size:16px}
+nav .logo i{width:30px;height:30px;border-radius:8px;background:var(--ac);display:grid;place-items:center}
+nav .logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav .sub{color:var(--mu);font-size:12.5px;margin-bottom:16px}
+nav a.back{display:block;margin-bottom:14px;padding:7px 10px;border:1px solid var(--ln2);border-radius:8px;color:var(--tx);text-align:center;font-size:13px}
+nav ol{list-style:none;margin:0;padding:0;counter-reset:n}
+nav li{counter-increment:n}
+nav li a{display:block;padding:5px 10px;border-radius:7px;color:#b4bfd0;font-size:13.5px}
+nav li a::before{content:counter(n)". ";color:var(--mu)}
+nav li a:hover,nav li a.on{background:#1b2435;color:#fff;text-decoration:none}
+main{flex:1;min-width:0;max-width:900px;padding:36px 44px 90px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.01em}
+.lead{color:var(--mu);margin:0 0 28px;font-size:16px}
+section{margin-bottom:46px}
+h2{font-size:22px;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--ln)}
+h3{font-size:16px;margin:24px 0 8px;color:#fff}
+p{margin:0 0 12px}
+ul,ol.s{margin:0 0 14px;padding-left:22px}
+li{margin:3px 0}
+code,kbd{font-family:'Fira Code',monospace;font-size:12.5px}
+code{background:#151d2e;border:1px solid var(--ln2);border-radius:5px;padding:1px 6px;color:#cfe0ff}
+kbd{display:inline-block;min-width:22px;text-align:center;background:#1b2435;border:1px solid #33425a;border-bottom-width:2px;border-radius:6px;padding:1px 7px;color:#fff;margin:0 1px}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{color:var(--mu);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;background:var(--p2)}
+td:first-child{white-space:nowrap;font-weight:500;color:#fff}
+.note,.tip,.warn{border-radius:10px;padding:11px 14px;margin:0 0 16px;font-size:14px;border:1px solid}
+.note{background:#0f1c33;border-color:#1e3a6b}
+.tip{background:#0d2219;border-color:#14532d}
+.warn{background:#2a1f0a;border-color:#6b4e12}
+.note b,.tip b,.warn b{display:block;margin-bottom:2px}
+.note b{color:var(--ac2)}.tip b{color:var(--ok)}.warn b{color:var(--wn)}
+.tool{display:inline-flex;align-items:center;gap:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--p1);border:1px solid var(--ln);border-radius:12px;padding:14px 16px}
+.card h3{margin-top:0}
+@media(max-width:900px){.wrap{flex-direction:column}nav{position:static;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--ln)}main{padding:24px 18px 60px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="logo"><i><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></i>VectorCraft</div>
+  <div class="sub">Pomoc i dokumentacja</div>
+  <a class="back" href="vectorcraft_icon_editor.html">← Wróć do edytora</a>
+  <ol id="toc">
+    <li><a href="#start">Szybki start</a></li>
+    <li><a href="#uklad">Układ interfejsu</a></li>
+    <li><a href="#pasek">Górny pasek</a></li>
+    <li><a href="#narzedzia">Narzędzia</a></li>
+    <li><a href="#widok">Widok, zoom i siatka</a></li>
+    <li><a href="#plotno">Panel: Płótno</a></li>
+    <li><a href="#wyglad">Panel: Wygląd</a></li>
+    <li><a href="#obiekt">Panel: Obiekt</a></li>
+    <li><a href="#warstwy">Panel: Warstwy</a></li>
+    <li><a href="#kod">Panel kodu</a></li>
+    <li><a href="#eksport">Eksport plików</a></li>
+    <li><a href="#projekty">Projekty i autozapis</a></li>
+    <li><a href="#skroty">Skróty klawiszowe</a></li>
+    <li><a href="#ikony">Poradnik: rysowanie ikon</a></li>
+    <li><a href="#faq">Problemy i pytania</a></li>
+  </ol>
+</nav>
+
+<main>
+<h1>Pomoc – VectorCraft</h1>
+<p class="lead">Edytor SVG do rysowania ikon i prostych grafik wektorowych. Tutaj znajdziesz opis każdego narzędzia, ustawienia i skrótu.</p>
+
+<section id="start">
+<h2>1. Szybki start</h2>
+<ol class="s">
+  <li>Ustaw rozmiar płótna w panelu <b>Płótno</b> po lewej (np. preset <code>24</code> albo <code>64</code>).</li>
+  <li>Wybierz narzędzie z paska po lewej (np. <b>Prostokąt</b>, klawisz <kbd>R</kbd>) i przeciągnij po płótnie.</li>
+  <li>Przełącz się na <b>Zaznaczanie</b> (<kbd>V</kbd>), kliknij obiekt i zmień jego kolor, grubość lub położenie w panelach po lewej.</li>
+  <li>Kod SVG widzisz na bieżąco w panelu po prawej. Skopiuj go przyciskiem <b>Kopiuj kod</b>.</li>
+  <li>Kliknij <b>Eksport…</b> w prawym górnym rogu, aby pobrać plik SVG, PNG, WebP lub JPG w dowolnym rozmiarze.</li>
+</ol>
+<div class="tip"><b>Wskazówka</b>Wszystko możesz cofnąć: <kbd>Ctrl</kbd>+<kbd>Z</kbd>. Historia zapamiętuje do 200 ostatnich kroków.</div>
+</section>
+
+<section id="uklad">
+<h2>2. Układ interfejsu</h2>
+<table>
+<tr><th>Obszar</th><th>Co zawiera</th></tr>
+<tr><td>Górny pasek</td><td>Cofnij/ponów, zoom, projekty (otwórz/zapisz), wyczyść, przełącznik panelu kodu, eksport, pomoc.</td></tr>
+<tr><td>Pasek narzędzi (lewa krawędź)</td><td>Pionowa kolumna ikon z narzędziami do rysowania i edycji.</td></tr>
+<tr><td>Panel lewy</td><td>Cztery rozwijane sekcje: <b>Płótno</b>, <b>Wygląd</b>, <b>Obiekt</b>, <b>Warstwy</b>. Kliknij nagłówek sekcji, aby ją zwinąć lub rozwinąć.</td></tr>
+<tr><td>Płótno (środek)</td><td>Obszar roboczy. Szachownica oznacza przezroczystość, ramka to granice ikony. Wszystko, co wychodzi poza ramkę, jest obcinane w eksporcie.</td></tr>
+<tr><td>Pasek stanu (dół)</td><td>Rozmiar płótna, współrzędne kursora, liczba obiektów oraz krótka podpowiedź do aktualnego narzędzia.</td></tr>
+<tr><td>Panel kodu (prawa strona)</td><td>Podgląd ikony w kilku rozmiarach, kod SVG / Base64 / CSS i opcje generowania kodu.</td></tr>
+</table>
+</section>
+
+<section id="pasek">
+<h2>3. Górny pasek</h2>
+<table>
+<tr><th>Przycisk</th><th>Działanie</th></tr>
+<tr><td>↶ Cofnij / ↷ Ponów</td><td>Cofa lub ponawia ostatnią zmianę (<kbd>Ctrl</kbd>+<kbd>Z</kbd>, <kbd>Ctrl</kbd>+<kbd>Y</kbd> lub <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>). Przyciski są nieaktywne, gdy nie ma czego cofać.</td></tr>
+<tr><td>− / + </td><td>Oddala i przybliża widok (o 25%). Zoom nie zmienia rozmiaru ikony, tylko to, jak ją widzisz.</td></tr>
+<tr><td>Wartość %</td><td>Pokazuje aktualne powiększenie. Kliknięcie dopasowuje płótno do okna (<kbd>0</kbd>).</td></tr>
+<tr><td>1:1</td><td>Ustawia powiększenie 100%, czyli jeden piksel ikony = jeden piksel ekranu (<kbd>1</kbd>).</td></tr>
+<tr><td>Otwórz</td><td>Wczytuje zapisany wcześniej projekt (plik <code>.json</code>). Zastępuje bieżący rysunek, ale operację można cofnąć.</td></tr>
+<tr><td>Zapisz projekt</td><td>Pobiera cały projekt (wszystkie obiekty i warstwy) jako plik <code>.vectorcraft.json</code> (<kbd>Ctrl</kbd>+<kbd>S</kbd>).</td></tr>
+<tr><td>Wyczyść</td><td>Usuwa wszystkie obiekty ze wszystkich warstw. Warstwy zostają, a akcję da się cofnąć.</td></tr>
+<tr><td>Pomoc</td><td>Otwiera tę stronę w nowej karcie (<kbd>F1</kbd>).</td></tr>
+<tr><td>Kod</td><td>Pokazuje lub ukrywa prawy panel z kodem, aby zyskać więcej miejsca na płótno.</td></tr>
+<tr><td>Eksport…</td><td>Otwiera okno pobierania pliku w wybranym formacie i rozmiarze. Zobacz <a href="#eksport">Eksport plików</a>.</td></tr>
+</table>
+</section>
+
+<section id="narzedzia">
+<h2>4. Narzędzia</h2>
+<p>Narzędzia wybierasz klikając ikonę na pasku po lewej albo klawiszem w nawiasie. Po najechaniu na ikonę zobaczysz jej nazwę. Podpowiedź do aktywnego narzędzia jest też w pasku stanu na dole.</p>
+<div class="note"><b>Ważne</b>Po przełączeniu na narzędzie inne niż Zaznaczanie zaznaczenie jest czyszczone, a świeżo narysowany obiekt nie jest zaznaczony. Aby zmienić jego wygląd, przełącz się na <kbd>V</kbd> i kliknij go.</div>
+
+<h3>Zaznaczanie <kbd>V</kbd></h3>
+<ul>
+  <li><b>Klik</b> zaznacza obiekt (na wierzchu, jeśli kilka się nakłada). <b>Shift+klik</b> dodaje obiekt do zaznaczenia lub go z niego odejmuje.</li>
+  <li><b>Przeciągnięcie na pustym miejscu</b> rysuje ramkę zaznaczenia – zaznaczy wszystkie obiekty, których obwiednia jej dotyka. Z <kbd>Shift</kbd> dodajesz do istniejącego zaznaczenia.</li>
+  <li><b>Przeciągnięcie obiektu</b> przesuwa go. <kbd>Shift</kbd> blokuje ruch do jednej osi. Przy włączonym przyciąganiu lewy górny róg zaznaczenia trafia na linie siatki.</li>
+  <li>Klik w obiekt, który jest częścią wielokrotnego zaznaczenia, bez przeciągania zawęża zaznaczenie do niego.</li>
+  <li><b>Kwadratowe uchwyty</b> (8 sztuk wokół zaznaczenia) skalują obiekt. <kbd>Shift</kbd> na rogu zachowuje proporcje. Przeciągnięcie za przeciwną krawędź odbija obiekt.</li>
+  <li><b>Pojedyncza linia lub ścieżka</b> zamiast uchwytów skalowania pokazuje <b>okrągłe punkty</b>. Przeciągnij punkt, aby go przesunąć (<kbd>Shift</kbd> = kąty co 45° względem sąsiedniego punktu). <b>Dwuklik</b> na odcinku dodaje punkt, <b>Alt+klik</b> na punkcie go usuwa.</li>
+  <li><b>Strzałki</b> przesuwają zaznaczenie o 1 jednostkę, a z <kbd>Shift</kbd> o rozmiar siatki.</li>
+</ul>
+<div class="tip"><b>Jak zaznaczać niewypełnione kształty</b>Prostokąt lub koło bez wypełnienia łapiesz za <i>krawędź</i> (obrys). Kliknięcie w pustym środku zaznacza to, co jest pod spodem albo zaczyna ramkę zaznaczenia.</div>
+
+<h3>Pędzel <kbd>B</kbd></h3>
+<p>Rysowanie odręczne. Po puszczeniu myszy linia jest automatycznie <b>upraszczana</b> (mniej punktów) i wygładzana krzywymi. Jeśli skończysz blisko miejsca startu, kształt zostanie <b>zamknięty</b>. Samo kliknięcie bez przeciągania stawia <b>kropkę</b> (koło o średnicy równej grubości linii, w kolorze obrysu). Pędzel nie przyciąga do siatki.</p>
+
+<h3>Linia <kbd>L</kbd></h3>
+<p>Przeciągnij od punktu początkowego do końcowego. <kbd>Shift</kbd> ogranicza kąt do wielokrotności 45°. Punkty przyciągają się do siatki.</p>
+
+<h3>Prostokąt <kbd>R</kbd></h3>
+<p>Przeciągnij po przekątnej. <kbd>Shift</kbd> daje kwadrat. Zaokrąglenie rogów ustawiasz w panelu <b>Wygląd → Zaokr. rogów</b> (przed rysowaniem albo po zaznaczeniu prostokąta).</p>
+
+<h3>Elipsa / koło <kbd>E</kbd></h3>
+<p>Przeciągasz po przekątnej prostokąta, w który elipsa ma być wpisana. <kbd>Shift</kbd> daje idealne koło. W kodzie koło zapisuje się jako <code>&lt;circle&gt;</code>, a elipsa jako <code>&lt;ellipse&gt;</code>.</p>
+
+<h3>Wielokąt <kbd>P</kbd> i Łamana <kbd>O</kbd></h3>
+<p>Klikaj kolejne punkty. <b>Wielokąt</b> jest zamykany (można go wypełnić), <b>Łamana</b> zostaje otwarta.</p>
+<ul>
+  <li>Zakończenie: <kbd>Enter</kbd>, dwuklik albo (dla wielokąta) klik w pierwszy punkt – wtedy w jego okolicy pojawia się zielone kółko.</li>
+  <li><kbd>Backspace</kbd> usuwa ostatni punkt, <kbd>Esc</kbd> anuluje całość.</li>
+  <li><kbd>Shift</kbd> ogranicza kolejny odcinek do kątów co 45°.</li>
+  <li>Zmiana narzędzia w trakcie rysowania kończy kształt.</li>
+</ul>
+
+<h3>Wiadro <kbd>G</kbd></h3>
+<p>Nadaje kolor wypełnienia kształtowi, w który klikniesz (liczy się wnętrze, także niewypełnionego dotąd obiektu).</p>
+<ul>
+  <li><b>Klik w obiekt</b> – wypełnia go aktualnym kolorem wypełnienia. Gdy wypełnienie jest wyłączone (∅), używany jest ostatnio wybrany kolor.</li>
+  <li><b>Shift+klik</b> – zmienia kolor obrysu zamiast wypełnienia.</li>
+  <li><b>Klik w puste miejsce</b> – wypełnia <b>tło płótna</b> (to samo co ustawienie Tło w panelu Płótno).</li>
+  <li><b>Alt+klik</b> – usuwa wypełnienie obiektu albo, na pustym miejscu, tło (wraca przezroczyste).</li>
+</ul>
+<div class="note"><b>To nie jest wiaderko rastrowe</b>Wypełnia cały kształt jako jedną całość. Nie wypełni obszaru ograniczonego przez kilka osobnych linii. Do tego narysuj wielokąt i go wypełnij.</div>
+
+<h3>Pipeta <kbd>I</kbd></h3>
+<p>Klik w obiekt kopiuje jego pełny styl (obrys, wypełnienie, grubość, krycie, końce, łączenia, kreskowanie) do bieżących ustawień. Klik w puste miejsce pobiera kolor tła (o ile jest ustawione) jako kolor wypełnienia.</p>
+
+<h3>Gumka <kbd>X</kbd></h3>
+<p>Kliknij obiekt, aby go usunąć, albo przeciągaj po wielu obiektach. Całe przeciągnięcie to jeden krok w historii, więc <kbd>Ctrl</kbd>+<kbd>Z</kbd> cofa je jednym ruchem.</p>
+
+<h3>Ręka <kbd>H</kbd></h3>
+<p>Przeciąganie przesuwa widok. To samo zrobisz tymczasowo, trzymając <kbd>Spację</kbd> lub środkowy przycisk myszy z dowolnego narzędzia.</p>
+
+<div class="note"><b>Warstwy ukryte lub zablokowane</b>Rysowanie na ukrytej lub zablokowanej warstwie jest niemożliwe (pojawi się czerwony komunikat). Obiektów z takich warstw nie da się też zaznaczać ani wypełniać.</div>
+</section>
+
+<section id="widok">
+<h2>5. Widok, zoom i siatka</h2>
+<table>
+<tr><th>Akcja</th><th>Jak</th></tr>
+<tr><td>Zoom</td><td>Kółko myszy (zoom w stronę kursora), przyciski +/−, klawisze <kbd>+</kbd> <kbd>−</kbd>. Zakres 10%–16000%.</td></tr>
+<tr><td>Dopasuj do okna</td><td>Klik w wartość procentową albo <kbd>0</kbd>.</td></tr>
+<tr><td>Rozmiar 1:1</td><td>Przycisk <b>1:1</b> albo <kbd>1</kbd>.</td></tr>
+<tr><td>Przesuwanie widoku</td><td>Narzędzie Ręka, <kbd>Spacja</kbd>+przeciąganie lub środkowy przycisk myszy.</td></tr>
+</table>
+<h3>Siatka i przyciąganie</h3>
+<ul>
+  <li>Siatka to linie pomocnicze co ustawioną liczbę pikseli. Nie jest częścią rysunku i nie trafia do kodu. Przy dużym oddaleniu (gdy oczko ma mniej niż 4 piksele na ekranie) znika automatycznie.</li>
+  <li><b>Przyciąganie do siatki</b> sprawia, że punkty rysowanych kształtów i przesuwane obiekty „zaskakują” na linie siatki. Dzięki temu ikony wychodzą równe i ostre.</li>
+  <li>Trzymaj <kbd>Alt</kbd>, aby chwilowo wyłączyć przyciąganie i ustawić coś dokładnie „na oko”.</li>
+</ul>
+</section>
+
+<section id="plotno">
+<h2>6. Panel: Płótno</h2>
+<table>
+<tr><th>Ustawienie</th><th>Co robi</th></tr>
+<tr><td>Rozmiar (szer. × wys.)</td><td>Wymiary ikony w pikselach (1–4096). Zmiana zatwierdza się Enterem lub wyjściem z pola. To rozmiar <b>roboczy</b> (<code>viewBox</code>), a końcowy rozmiar pliku wybierasz przy eksporcie.</td></tr>
+<tr><td>Preset</td><td>Gotowe kwadraty: 16, 24, 32, 48, 64, 96, 128, 256, 512, 1024. Po wybraniu lista wraca do „Wybierz…”.</td></tr>
+<tr><td>Skaluj zawartość przy zmianie rozmiaru</td><td>Wyłączone: rysunek zostaje w miejscu, zmienia się tylko obszar (przydatne do dodania marginesu). Włączone: rysunek razem z grubościami linii i zaokrągleniami rogów jest przeskalowywany proporcjonalnie do nowego rozmiaru.</td></tr>
+<tr><td>Tło</td><td><b>Przezroczyste</b> (szachownica) albo <b>Kolor</b> (pole koloru obok). Tło wchodzi do kodu jako prostokąt na całą ikonę i do plików PNG/WebP/JPG. Ustawisz je też wiaderkiem.</td></tr>
+<tr><td>Siatka (pole wyboru + wartość)</td><td>Włącza widoczność siatki i ustawia jej oczko w pikselach (min. 0,1; przydatne np. 1 lub 2 przy ikonach 24×24).</td></tr>
+<tr><td>Przyciągaj do siatki</td><td>Włącza przyciąganie punktów i przesuwanych obiektów do linii siatki (<kbd>Alt</kbd> chwilowo wyłącza).</td></tr>
+</table>
+</section>
+
+<section id="wyglad">
+<h2>7. Panel: Wygląd</h2>
+<p>Ustawienia z tego panelu dotyczą <b>nowo rysowanych</b> obiektów oraz <b>aktualnie zaznaczonych</b> obiektów (zmieniasz je na żywo). Po zaznaczeniu obiektu panel automatycznie pokazuje jego styl.</p>
+<table>
+<tr><th>Ustawienie</th><th>Co robi</th></tr>
+<tr><td>Obrys / Wypełnienie (przyciski)</td><td>Wybierają, którego koloru dotyczą kliknięcia w <b>paletę</b> poniżej. Aktywny jest podświetlony na niebiesko.</td></tr>
+<tr><td>Pola koloru</td><td>Dokładny wybór koloru obrysu i wypełnienia. Wybranie koloru włącza dany element, jeśli był wyłączony.</td></tr>
+<tr><td>∅ (obok koloru)</td><td>Wyłącza obrys lub wypełnienie (brak). Ponowne kliknięcie przywraca ostatni kolor.</td></tr>
+<tr><td>⇄ Zamień</td><td>Zamienia miejscami kolor obrysu i wypełnienia.</td></tr>
+<tr><td>Paleta</td><td>Gotowe kolory. Kratka z ukośnym wzorem to „brak”. Kolor trafia do elementu wybranego przyciskami Obrys/Wypełnienie.</td></tr>
+<tr><td>Grubość</td><td>Grubość obrysu (0,25–32 suwakiem, do 200 w polu liczbowym). Obiekt z obrysem „brak” jej nie używa.</td></tr>
+<tr><td>Krycie</td><td>Przezroczystość całego obiektu (5–100%). W kodzie jako atrybut <code>opacity</code>.</td></tr>
+<tr><td>Końce</td><td>Kształt zakończeń linii otwartych: <b>płaskie</b> (<code>butt</code>), <b>okrągłe</b> (<code>round</code>) lub <b>kwadratowe</b> (<code>square</code>, wystaje o pół grubości).</td></tr>
+<tr><td>Łączenia</td><td>Jak wyglądają zagięcia: <b>ostre</b> (<code>miter</code>), <b>okrągłe</b> lub <b>ścięte</b> (<code>bevel</code>).</td></tr>
+<tr><td>Linia</td><td><b>Ciągła</b>, <b>Kreskowana</b> (kreski 2,5× grubości, przerwy 2×) lub <b>Kropkowana</b> (okrągłe kropki; końce są wtedy automatycznie okrągłe).</td></tr>
+<tr><td>Zaokr. rogów</td><td>Promień zaokrąglenia rogów <b>prostokątów</b>. Działa na zaznaczone prostokąty i na te rysowane w przyszłości. Zbyt duża wartość jest automatycznie ograniczana do połowy krótszego boku.</td></tr>
+</table>
+<div class="tip"><b>Wygląd typowej ikony liniowej</b>Wypełnienie: brak (∅), obrys: jeden kolor, grubość 2 (przy płótnie 24 px), końce i łączenia: okrągłe.</div>
+</section>
+
+<section id="obiekt">
+<h2>8. Panel: Obiekt</h2>
+<p>Aktywny tylko wtedy, gdy coś jest zaznaczone. Nagłówek pokazuje liczbę zaznaczonych obiektów.</p>
+<table>
+<tr><th>Ustawienie</th><th>Co robi</th></tr>
+<tr><td>X, Y, W, H</td><td>Położenie lewego górnego rogu oraz szerokość i wysokość zaznaczenia (mierzone po geometrii, bez grubości obrysu). Wpisz wartość i zatwierdź, aby dokładnie ustawić obiekt lub go przeskalować.</td></tr>
+<tr><td>Zachowaj proporcje</td><td>Zmiana W automatycznie zmienia H (i odwrotnie), zachowując kształt.</td></tr>
+<tr><td>Odbij poziomo / pionowo</td><td>Lustrzane odbicie zaznaczenia względem jego środka.</td></tr>
+<tr><td>Wyrównanie</td><td>Przesuwa całe zaznaczenie względem <b>płótna</b>: do lewej, środek poziomo, do prawej, do góry, środek pionowo, na dół. „Środek” obu osi daje idealne wycentrowanie ikony.</td></tr>
+<tr><td>Na wierzch / Wyżej / Niżej / Na spód</td><td>Zmienia kolejność nakładania w obrębie warstwy. „Na wierzch” i „Na spód” to skrajne pozycje, „Wyżej”/„Niżej” przesuwają o jeden obiekt.</td></tr>
+<tr><td>Wygładź krzywą <i>(tylko ścieżki)</i></td><td>Przełącza między łamaną (ostre kąty) a gładką krzywą przechodzącą przez punkty. Domyślnie włączone dla pędzla, wyłączone dla wielokątów i łamanych.</td></tr>
+<tr><td>Zamknij ścieżkę <i>(tylko ścieżki)</i></td><td>Łączy ostatni punkt z pierwszym (potrzebne są co najmniej 3 punkty). Tylko zamknięty kształt da się sensownie wypełnić.</td></tr>
+<tr><td>Duplikuj</td><td>Tworzy kopię z lekkim przesunięciem i zaznacza ją (<kbd>Ctrl</kbd>+<kbd>D</kbd>).</td></tr>
+<tr><td>Usuń</td><td>Usuwa zaznaczone obiekty (<kbd>Delete</kbd> lub <kbd>Backspace</kbd>).</td></tr>
+</table>
+</section>
+
+<section id="warstwy">
+<h2>9. Panel: Warstwy</h2>
+<p>Warstwy pozwalają porządkować rysunek (np. „tło”, „kontur”, „detale”). Lista pokazuje najwyższą warstwę u góry. Cyfra po prawej to liczba obiektów w warstwie.</p>
+<table>
+<tr><th>Element</th><th>Działanie</th></tr>
+<tr><td>Klik w wiersz</td><td>Ustawia <b>aktywną warstwę</b> (niebieska ramka). Nowo rysowane obiekty trafiają właśnie do niej. Zaznaczenie obiektu przełącza aktywną warstwę na tę, do której należy.</td></tr>
+<tr><td>👁 (oko)</td><td>Pokazuje lub ukrywa warstwę. Ukryte warstwy nie trafiają do kodu ani do eksportu.</td></tr>
+<tr><td>🔒 (kłódka)</td><td>Blokuje warstwę – nie da się na niej rysować ani zaznaczać jej obiektów. Zabezpiecza przed przypadkowym przesunięciem.</td></tr>
+<tr><td>Dwuklik na nazwie</td><td>Zmienia nazwę (Enter zatwierdza, Esc anuluje). Nazwa może posłużyć jako <code>id</code> grupy w kodzie.</td></tr>
+<tr><td>＋ Nowa</td><td>Dodaje pustą warstwę nad aktywną.</td></tr>
+<tr><td>Duplikuj</td><td>Kopiuje aktywną warstwę razem z jej obiektami.</td></tr>
+<tr><td>Usuń</td><td>Usuwa aktywną warstwę <b>wraz z obiektami</b> (do cofnięcia). Musi zostać przynajmniej jedna warstwa.</td></tr>
+<tr><td>▲ Wyżej / ▼ Niżej</td><td>Zmienia kolejność warstw (kto jest nad kim).</td></tr>
+<tr><td>→ Tu zazn.</td><td>Przenosi zaznaczone obiekty na aktywną warstwę. Kliknij docelową warstwę, a potem ten przycisk.</td></tr>
+</table>
+</section>
+
+<section id="kod">
+<h2>10. Panel kodu</h2>
+<p>Zawsze aktualny, odświeża się przy każdej zmianie rysunku. Pokazuje tylko widoczne warstwy.</p>
+<h3>Podgląd</h3>
+<p>Dwa paski z ikoną w rozmiarach 16, 24, 32, 48 i 64 px – na ciemnym i jasnym tle. To najlepszy sposób, by ocenić, czy ikona jest czytelna w małych rozmiarach.</p>
+<h3>Zakładki</h3>
+<table>
+<tr><th>Zakładka</th><th>Zawartość</th></tr>
+<tr><td>SVG</td><td>Zwykły kod, który wklejasz do pliku HTML albo zapisujesz jako <code>.svg</code>.</td></tr>
+<tr><td>Base64</td><td>Adres <code>data:image/svg+xml;base64,…</code>, np. do atrybutu <code>src</code> obrazka.</td></tr>
+<tr><td>CSS</td><td>Gotowa reguła <code>background-image: url("data:image/svg+xml,…");</code>.</td></tr>
+</table>
+<h3>Opcje generowania kodu</h3>
+<table>
+<tr><th>Opcja</th><th>Co robi</th></tr>
+<tr><td>currentColor</td><td>Zamienia wszystkie kolory na <code>currentColor</code>, dzięki czemu ikona przejmuje kolor tekstu (<code>color</code> w CSS). Tło płótna jest wtedy pomijane. Idealne dla ikon jednokolorowych.</td></tr>
+<tr><td>Warstwy jako &lt;g&gt;</td><td>Elementy każdej warstwy trafiają do osobnej grupy <code>&lt;g id="nazwa-warstwy"&gt;</code>. Bez tej opcji kod jest płaski.</td></tr>
+<tr><td>Wspólne style w &lt;svg&gt;</td><td>Atrybuty identyczne we wszystkich elementach (np. <code>fill="none" stroke="…" stroke-width="2"</code>) są zapisane raz na elemencie <code>&lt;svg&gt;</code>, a nie przy każdym kształcie. Zmniejsza kod i ułatwia ręczną edycję. Krycie (<code>opacity</code>) zawsze zostaje przy obiekcie.</td></tr>
+<tr><td>Upraszczanie ścieżek</td><td><b>Brak / Lekkie / Mocne.</b> Usuwa nadmiarowe punkty z linii narysowanych pędzlem tylko w kodzie wynikowym (na płótnie nic się nie zmienia). „Mocne” daje najkrótszy kod, ale może delikatnie zmienić kształt.</td></tr>
+<tr><td>Precyzja</td><td>Liczba miejsc po przecinku w współrzędnych (0–4). Mniej = krótszy kod. Dla ikon 24–64 px zwykle wystarcza 1–2.</td></tr>
+</table>
+<h3>Przyciski na dole</h3>
+<ul>
+  <li><b>Kopiuj kod</b> – kopiuje zawartość aktualnej zakładki do schowka.</li>
+  <li><b>Pobierz .svg</b> – zapisuje plik <code>ikona.svg</code> w rozmiarze płótna. Inny rozmiar lub format wybierzesz w oknie <b>Eksport…</b>.</li>
+  <li>Z prawej widzisz rozmiar kodu SVG w bajtach.</li>
+</ul>
+</section>
+
+<section id="eksport">
+<h2>11. Eksport plików</h2>
+<p>Przycisk <b>Eksport…</b> otwiera okno, w którym ustawiasz format i rozmiar. Zamkniesz je przyciskiem Anuluj, klawiszem <kbd>Esc</kbd> albo klikając w ciemne tło.</p>
+<table>
+<tr><th>Ustawienie</th><th>Opis</th></tr>
+<tr><td>Format</td><td><b>SVG</b> – wektor, skaluje się bez utraty jakości. <b>PNG</b> – obraz z przezroczystością. <b>WebP</b> – mały obraz z przezroczystością. <b>JPG</b> – bez przezroczystości (jeśli płótno nie ma tła, tło będzie białe).</td></tr>
+<tr><td>Rozmiar (szer. × wys.)</td><td>Docelowy wymiar w pikselach (1–8192). Przy SVG zmieniają się tylko atrybuty <code>width</code> i <code>height</code>, a <code>viewBox</code> zostaje.</td></tr>
+<tr><td>Proporcje</td><td>Powiązuje szerokość i wysokość tak, aby zachować kształt płótna.</td></tr>
+<tr><td>Szybkie rozmiary</td><td>Przyciski 16–1024 ustawiają <b>dłuższy bok</b> (drugi liczy się automatycznie). „Oryginał” przywraca rozmiar płótna.</td></tr>
+<tr><td>Nazwa</td><td>Nazwa pliku bez rozszerzenia.</td></tr>
+<tr><td>Podgląd</td><td>Miniatura tego, co zostanie pobrane (na szachownicy, więc widać przezroczystość).</td></tr>
+</table>
+<div class="note"><b>currentColor a PNG</b>Opcja currentColor działa tylko w eksporcie SVG. Pliki rastrowe (PNG, WebP, JPG) są zawsze rysowane w oryginalnych kolorach.</div>
+</section>
+
+<section id="projekty">
+<h2>12. Projekty i autozapis</h2>
+<ul>
+  <li><b>Zapisz projekt</b> tworzy plik <code>.vectorcraft.json</code> z całą zawartością (obiekty, warstwy, rozmiar, tło). Używaj go, gdy chcesz wrócić do edycji – plik SVG nie zachowuje wszystkich informacji edytora.</li>
+  <li><b>Otwórz</b> wczytuje taki plik. Plik z błędnym formatem zostanie odrzucony z komunikatem.</li>
+  <li><b>Autozapis:</b> edytor sam zapisuje stan w przeglądarce po każdej zmianie i przywraca go przy ponownym otwarciu strony. Dotyczy to tej samej przeglądarki i tego samego pliku/adresu. Czyszczenie danych witryn go usuwa, więc ważne projekty zapisuj do pliku.</li>
+  <li>Edytor nie importuje gotowych plików SVG – działa wyłącznie na własnych projektach.</li>
+</ul>
+</section>
+
+<section id="skroty">
+<h2>13. Skróty klawiszowe</h2>
+<div class="grid2">
+<div class="card"><h3>Narzędzia</h3>
+<table>
+<tr><td><kbd>V</kbd></td><td>Zaznaczanie</td></tr>
+<tr><td><kbd>B</kbd></td><td>Pędzel</td></tr>
+<tr><td><kbd>L</kbd></td><td>Linia</td></tr>
+<tr><td><kbd>R</kbd></td><td>Prostokąt</td></tr>
+<tr><td><kbd>E</kbd></td><td>Elipsa / koło</td></tr>
+<tr><td><kbd>P</kbd></td><td>Wielokąt</td></tr>
+<tr><td><kbd>O</kbd></td><td>Łamana</td></tr>
+<tr><td><kbd>G</kbd></td><td>Wiadro</td></tr>
+<tr><td><kbd>I</kbd></td><td>Pipeta</td></tr>
+<tr><td><kbd>X</kbd></td><td>Gumka</td></tr>
+<tr><td><kbd>H</kbd></td><td>Ręka</td></tr>
+</table></div>
+<div class="card"><h3>Edycja</h3>
+<table>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Cofnij</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td><td>Ponów</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd> / <kbd>V</kbd></td><td>Kopiuj / wklej obiekty</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td><td>Duplikuj</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Zaznacz wszystko</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Zapisz projekt</td></tr>
+<tr><td><kbd>Delete</kbd> / <kbd>Backspace</kbd></td><td>Usuń zaznaczenie</td></tr>
+<tr><td><kbd>←↑→↓</kbd></td><td>Przesuń o 1 jednostkę</td></tr>
+<tr><td><kbd>Shift</kbd>+<kbd>←↑→↓</kbd></td><td>Przesuń o oczko siatki</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Anuluj / odznacz</td></tr>
+</table></div>
+<div class="card"><h3>Widok</h3>
+<table>
+<tr><td><kbd>+</kbd> / <kbd>−</kbd></td><td>Przybliż / oddal</td></tr>
+<tr><td><kbd>0</kbd></td><td>Dopasuj do okna</td></tr>
+<tr><td><kbd>1</kbd></td><td>Rozmiar 1:1</td></tr>
+<tr><td><kbd>Spacja</kbd> + przeciąganie</td><td>Przesuwanie widoku</td></tr>
+<tr><td>Kółko myszy</td><td>Zoom</td></tr>
+<tr><td><kbd>F1</kbd></td><td>Pomoc</td></tr>
+</table></div>
+<div class="card"><h3>Modyfikatory podczas rysowania</h3>
+<table>
+<tr><td><kbd>Shift</kbd></td><td>Kwadrat/koło, kąty co 45°, proporcje przy skalowaniu, ruch w jednej osi</td></tr>
+<tr><td><kbd>Alt</kbd></td><td>Wyłącza przyciąganie; na punkcie ścieżki – usuwa go; z wiadrem – usuwa wypełnienie</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Kończy wielokąt / łamaną</td></tr>
+<tr><td><kbd>Backspace</kbd></td><td>Usuwa ostatni punkt wielokąta</td></tr>
+</table></div>
+</div>
+<div class="note"><b>Uwaga</b>Skróty jednoliterowe nie działają, gdy kursor jest w polu tekstowym lub liczbowym. Kliknij w płótno, aby wrócić do skrótów.</div>
+</section>
+
+<section id="ikony">
+<h2>14. Poradnik: rysowanie ikon</h2>
+<ol class="s">
+  <li><b>Wybierz rozmiar roboczy.</b> Dla ikon interfejsu zwykle 24×24 (albo 16, 32, 48). Wybierz preset w panelu Płótno.</li>
+  <li><b>Ustaw siatkę.</b> Oczko 1 lub 2 px, przyciąganie włączone – linie trafią na całe piksele i ikona będzie ostra.</li>
+  <li><b>Ustaw styl.</b> Ikona liniowa: wypełnienie ∅, grubość 2, końce i łączenia okrągłe. Ikona pełna: obrys ∅ i kolor wypełnienia.</li>
+  <li><b>Narysuj kształty</b> narzędziami geometrycznymi (prostokąt, elipsa, linia, wielokąt). Pędzla używaj oszczędnie – daje dłuższy kod.</li>
+  <li><b>Popraw szczegóły:</b> zaznacz obiekt, przeciągaj jego punkty lub użyj pól X/Y/W/H. Wycentruj całość przyciskami wyrównania.</li>
+  <li><b>Sprawdź podgląd</b> w panelu kodu w rozmiarach 16–64 px na ciemnym i jasnym tle.</li>
+  <li><b>Wygeneruj kod:</b> dla ikon jednokolorowych włącz <code>currentColor</code>, ustaw precyzję 1–2 i opcję „Wspólne style w &lt;svg&gt;”. Skopiuj kod lub pobierz plik.</li>
+  <li><b>Zapisz projekt</b> (<kbd>Ctrl</kbd>+<kbd>S</kbd>), aby móc go potem edytować.</li>
+</ol>
+<div class="tip"><b>Ikona w kolorze tekstu</b>Po włączeniu currentColor wstaw kod bezpośrednio w HTML (inline) i ustaw w CSS <code>color</code> – ikona przejmie ten kolor. Dotyczy to SVG wstawionego inline, a nie obrazka z <code>&lt;img src&gt;</code>.</div>
+</section>
+
+<section id="faq">
+<h2>15. Problemy i pytania</h2>
+<h3>Nie mogę zaznaczyć obiektu / nic się nie rysuje</h3>
+<ul>
+  <li>Sprawdź, czy aktywna warstwa nie jest ukryta lub zablokowana (ikony oka i kłódki).</li>
+  <li>Obiekt bez wypełnienia łapiesz za krawędź, nie za środek.</li>
+  <li>Obiekty poza obszarem płótna są obcinane. Zaznacz wszystko (<kbd>Ctrl</kbd>+<kbd>A</kbd>) i użyj wyrównania, żeby wrócić z nimi do środka.</li>
+</ul>
+<h3>Wiadro nie wypełnia całego obszaru</h3>
+<p>Wiadro koloruje jeden obiekt jako całość. Żeby wypełnić tło, kliknij nim w puste miejsce płótna. Żeby wypełnić figurę z kilku linii, narysuj ją jako wielokąt.</p>
+<h3>Zmieniam kolor, ale obiekt się nie zmienia</h3>
+<p>Zmiany stosują się do zaznaczonych obiektów. Jeśli nic nie jest zaznaczone, zmieniasz tylko ustawienia dla kolejnych obiektów. Wybierz <kbd>V</kbd> i zaznacz obiekt.</p>
+<h3>Kod różni się nieco od tego, co widzę</h3>
+<p>Włączone „Upraszczanie ścieżek” lub niska „Precyzja” upraszczają kod. Ustaw upraszczanie na „Brak” i zwiększ precyzję, aby uzyskać 1:1.</p>
+<h3>Zniknął mój rysunek po ponownym otwarciu</h3>
+<p>Autozapis działa w obrębie tej samej przeglądarki i adresu pliku. Otwarcie edytora z innego miejsca albo wyczyszczenie danych witryn go resetuje. Zapisuj ważne projekty jako plik (<b>Zapisz projekt</b>).</p>
+<h3>Czy mogę wczytać istniejący plik SVG?</h3>
+<p>Nie. Edytor edytuje tylko własne projekty (<code>.vectorcraft.json</code>), a gotowy SVG możesz tu jedynie odtworzyć, rysując go od nowa.</p>
+<h3>Jak zmienić rozmiar gotowej ikony?</h3>
+<p>Do pliku wynikowego użyj <b>Eksport…</b> i wpisz rozmiar. Aby zmienić rozmiar samego rysunku, zmień wymiary płótna z włączonym „Skaluj zawartość”.</p>
+</section>
+</main>
+</div>
+<script>
+// Podświetlanie aktualnej sekcji w spisie treści
+(function(){
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var obs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('on');}); var a=map[e.target.id]; if(a)a.classList.add('on'); } });
+  },{rootMargin:'-10% 0px -80% 0px'});
+  document.querySelectorAll('main section').forEach(function(s){obs.observe(s);});
+})();
+</script>
+</body>
+</html>
